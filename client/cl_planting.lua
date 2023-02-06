@@ -23,17 +23,34 @@ RegisterNetEvent('ps-weedplanting:client:UseWeedSeed', function()
                 exports['qb-core']:KeyPressed(38)
                 DeleteObject(plant)
 
+                local ped = PlayerPedId()
+                RequestAnimDict("amb@medic@standing@kneel@base")
+                RequestAnimDict("anim@gangops@facility@servers@bodysearch@")
+                while 
+                    not HasAnimDictLoaded("amb@medic@standing@kneel@base") or
+                    not HasAnimDictLoaded("anim@gangops@facility@servers@bodysearch@")
+                do 
+                    Wait(0) 
+                end
+                TaskPlayAnim(ped, "amb@medic@standing@kneel@base", "base", 8.0, 8.0, -1, 1, 0, false, false, false)
+                TaskPlayAnim(ped, "anim@gangops@facility@servers@bodysearch@", "player_search", 8.0, 8.0, -1, 48, 0, false, false, false)
                 QBCore.Functions.Progressbar("spawn_plant", _U('place_sapling'), 2000, false, true, {
-                    disableMovement = false,
+                    disableMovement = true,
                     disableCarMovement = false,
                     disableMouse = false,
-                    disableCombat = false,
+                    disableCombat = true,
                 }, {}, {}, {}, function() 
                     TriggerServerEvent('ps-weedplanting:server:CreateNewPlant', dest)
                     planted = false
+                    ClearPedTasks(ped)
+                    RemoveAnimDict("amb@medic@standing@kneel@base")
+                    RemoveAnimDict("anim@gangops@facility@servers@bodysearch@")
                 end, function() 
-                    QBCore.Functions.Notify(_U('canceled'), "error")
+                    QBCore.Functions.Notify(_U('canceled'), "error", 2500)
                     planted = false
+                    ClearPedTasks(ped)
+                    RemoveAnimDict("amb@medic@standing@kneel@base")
+                    RemoveAnimDict("anim@gangops@facility@servers@bodysearch@")
                 end)
             end
             
@@ -47,7 +64,3 @@ RegisterNetEvent('ps-weedplanting:client:UseWeedSeed', function()
         end
     end
 end)
-
-RegisterCommand('test', function()
-    TriggerEvent('ps-weedplanting:client:UseWeedSeed')
-end, false)

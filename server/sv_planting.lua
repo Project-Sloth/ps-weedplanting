@@ -37,26 +37,39 @@ destroyAllPlants = function()
 end
 
 RegisterNetEvent('ps-weedplanting:server:CreateNewPlant', function(coords)
-    local ModelHash = Shared.WeedProps[1]
-    local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z, true, true, false)
-    FreezeEntityPosition(plant, true)
-    MySQL.insert('INSERT into weedplants (coords, growth, nutrition, water, health, gender) VALUES (:coords, :growth, :nutrition, :water, :health, :gender)', {
-        ['coords'] = json.encode(coords),
-        ['growth'] = 0,
-        ['nutrition'] = 0,
-        ['water'] = 0,
-        ['health'] = 100,
-        ['gender'] = 'female'
-    }, function(data)
-        WeedPlants[plant] = {
-            id = data,
-            coords = coords,
-            growth = 0,
-            nutrition = 0,
-            water = 0,
-            health = 100,
-            gender = 'female',
-            stage = 1
-        }
-    end)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Shared.rayCastingDistance + 10 then return end
+    if exports['qb-inventory']:RemoveItem(src, Shared.FemaleSeed, 1) then
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FemaleSeed], 'remove')
+        local ModelHash = Shared.WeedProps[1]
+        local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z, true, true, false)
+        FreezeEntityPosition(plant, true)
+        MySQL.insert('INSERT into weedplants (coords, growth, nutrition, water, health, gender) VALUES (:coords, :growth, :nutrition, :water, :health, :gender)', {
+            ['coords'] = json.encode(coords),
+            ['growth'] = 0,
+            ['nutrition'] = 0,
+            ['water'] = 0,
+            ['health'] = 100,
+            ['gender'] = 'female'
+        }, function(data)
+            WeedPlants[plant] = {
+                id = data,
+                coords = coords,
+                growth = 0,
+                nutrition = 0,
+                water = 0,
+                health = 100,
+                gender = 'female',
+                stage = 1
+            }
+        end)
+    end
+end)
+
+-- Items
+
+QBCore.Functions.CreateUseableItem(Shared.FemaleSeed, function(source)
+    TriggerClientEvent("ps-weedplanting:client:UseWeedSeed", source)
 end)
