@@ -24,6 +24,8 @@ Locales = {
 	['add_water'] = 'Add water to this plant',
 	['add_fertilizer'] = 'Add fertilizer to the plant',
 	['add_mseed'] = 'Add male seeds',
+	['not_enough_dryweed'] = 'You don\'t have enough dried weed...',
+	['packaging_weed'] = 'Packaging..',
 }
 
 function _U(entry)

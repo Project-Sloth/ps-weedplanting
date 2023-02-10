@@ -21,7 +21,6 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
     local netId = NetworkGetNetworkIdFromEntity(data.entity)
     QBCore.Functions.TriggerCallback('ps-weedplanting:server:GetPlantData', function(result)
         if not result then return end
-
         if result.health == 0 then -- Destroy plant
             exports['qb-menu']:openMenu({
                 {
@@ -452,6 +451,19 @@ RegisterNetEvent('ps-weedplanting:client:UseBranch', function()
         disableCombat = true,
     }, {}, {}, {}, function() -- Done
         TriggerServerEvent('ps-weedplanting:server:ProcessBranch')
+    end, function() -- Cancel
+        QBCore.Functions.Notify(_U('canceled'), 'error', 2500)
+    end)
+end)
+
+RegisterNetEvent('ps-weedplanting:client:UseDryWeed', function()
+    QBCore.Functions.Progressbar('dryweed', _U('packaging_weed'), 5000, false, true, {
+        disableMovement = true,
+        disableCarMovement = true,
+        disableMouse = false,
+        disableCombat = true,
+    }, {}, {}, {}, function() -- Done
+        TriggerServerEvent('ps-weedplanting:server:PackageWeed')
     end, function() -- Cancel
         QBCore.Functions.Notify(_U('canceled'), 'error', 2500)
     end)
