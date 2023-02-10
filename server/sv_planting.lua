@@ -15,7 +15,7 @@ setupPlants = function()
         if stage == 0 then stage += 1 end
         local ModelHash = Shared.WeedProps[stage]
         local coords = json.decode(v.coords)
-        local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z, true, true, false)
+        local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z + Shared.ObjectZOffset, true, true, false)
         FreezeEntityPosition(plant, true)
 
         WeedPlants[plant] = {
@@ -34,11 +34,7 @@ end
 
 --- Method to delete all cached plant props and deletes dead plants in the database
 --- @return nil
-destroyAllPlants = function()
-    if Shared.ClearOnStartup then
-        MySQL.query('DELETE from weedplants WHERE health <= 0')
-    end
-    
+destroyAllPlants = function()    
     for k, v in pairs(WeedPlants) do
         if DoesEntityExist(k) then
             DeleteEntity(k)
@@ -57,7 +53,7 @@ RegisterNetEvent('ps-weedplanting:server:CreateNewPlant', function(coords)
     if exports['qb-inventory']:RemoveItem(src, Shared.FemaleSeed, 1) then
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FemaleSeed], 'remove', 1)
         local ModelHash = Shared.WeedProps[1]
-        local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z, true, true, false)
+        local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z + Shared.ObjectZOffset, true, true, false)
         FreezeEntityPosition(plant, true)
         local time = os.time()
         MySQL.insert('INSERT into weedplants (coords, time, growth, nutrition, water, health, gender) VALUES (:coords, :time, :growth, :nutrition, :water, :health, :gender)', {
