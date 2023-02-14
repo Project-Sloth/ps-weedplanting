@@ -1,4 +1,4 @@
-Locales = {
+local Locales = {
     ['place_sapling'] = 'Placing Sapling..',
 	['canceled'] = 'Canceled..',
 	['place_or_cancel'] = '[E] - Place Plant / [G] - Cancel',
@@ -26,6 +26,24 @@ Locales = {
 	['add_mseed'] = 'Add male seeds',
 	['not_enough_dryweed'] = 'You don\'t have enough dried weed...',
 	['packaging_weed'] = 'Packaging..',
+	['package_goods'] = 'Package Goods',
+	['grab_packaged_goods'] = 'Grab Package',
+	['start_delivering'] = 'Start Delivering',
+	['stop_delivering'] = 'Stop Delivering',
+	['dont_have_anything'] = 'You don\'t have anything to package for me..',
+	['handing_over_weed'] = 'Handing over packed weed..',
+	['wait_closeby'] = 'Wait closeby until i\'m done packaging for you..',
+	['still_waiting'] = 'I\'m not done yet!',
+	['moved_too_far'] = 'You\'ve moved too far away!',
+	['deliver_package'] = 'Deliver Package',
+	['weedrun_clockout'] = 'You\'ve stopped delivering packages..',
+	['weedrun_hasnopackage'] = 'So what do you actually want to give to me..?',
+	['weedrun_delivery_blip'] = 'Weedrun - Delivery',
+	['weedrun_delivery_title'] = 'CURRENT',
+	['weedrun_delivery_godropoff'] = 'Make your way to the drop-off..',
+	['weedrun_delivery_makedropoff'] = 'Make the delivery..',
+	['weedrun_delivery_waitfornew'] = 'Wait for a new location..',
+	['weedrun_delivery_success'] = 'Delivery was good, you will be updated with the next drop-off..'
 }
 
 function _U(entry)
