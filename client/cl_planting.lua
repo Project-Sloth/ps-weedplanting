@@ -33,7 +33,7 @@ RegisterNetEvent('ps-weedplanting:client:UseWeedSeed', function()
     local hit, dest, _, _ = RayCastCamera(Shared.rayCastingDistance)
     local plant = CreateObject(ModelHash, dest.x, dest.y, dest.z + Shared.ObjectZOffset, false, false, false)
     SetEntityCollision(plant, false, false)
-    SetEntityAlpha(plant, 80, true)
+    SetEntityAlpha(plant, 150, true)
 
     local planted = false
     while not planted do
