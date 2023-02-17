@@ -1,8 +1,5 @@
 Shared = Shared or {}
 
-Shared.rayCastingDistance = 7.0 -- distance in meters
-Shared.ClearOnStartup = true -- Clear dead plants on script start-up
-
 --- Items
 Shared.MaleSeed = 'weedplant_seedm'
 Shared.FemaleSeed = 'weedplant_seedf'
@@ -25,6 +22,8 @@ Shared.WeedProps = {
 Shared.PackageProp = `prop_mp_drug_package`
 
 --- Growing Related Settings
+Shared.rayCastingDistance = 7.0 -- distance in meters
+Shared.ClearOnStartup = true -- Clear dead plants on script start-up
 Shared.ObjectZOffset = - 0.5 -- Z-coord offset for WeedProps
 Shared.FireTime = 10000
 
