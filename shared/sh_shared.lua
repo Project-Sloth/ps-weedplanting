@@ -1,23 +1,41 @@
 Shared = Shared or {}
 
 Shared.rayCastingDistance = 7.0 -- distance in meters
-Shared.Inventory = 'exports' -- 'exports' for inventory exports, 'player' for player class functions
 Shared.ClearOnStartup = true -- Clear dead plants on script start-up
 
+--- Items
+Shared.MaleSeed = 'weedplant_seedm'
+Shared.FemaleSeed = 'weedplant_seedf'
+Shared.FertilizerItem = 'weed_nutrition'
+Shared.WaterItem = 'water_bottle'
+Shared.BranchItem = 'weedplant_branch'
+Shared.WeedItem = 'weedplant_weed'
+Shared.PackedWeedItem = 'weedplant_packedweed'
+Shared.SusPackageItem = 'weedplant_package'
+
+--- Props
+Shared.WeedProps = {
+    [1] = `bkr_prop_weed_01_small_01b`,
+    [2] = `bkr_prop_weed_med_01a`,
+    [3] = `bkr_prop_weed_med_01b`,
+    [4] = `bkr_prop_weed_lrg_01a`,
+    [5] = `bkr_prop_weed_lrg_01b`
+}
+
+Shared.PackageProp = `prop_mp_drug_package`
+
+--- Growing Related Settings
 Shared.ObjectZOffset = - 0.5 -- Z-coord offset for WeedProps
 Shared.FireTime = 10000
 
-Shared.AddWaterAmount = 50 -- Amount of water that is added when watering a plant
-Shared.AddFertilizerAmount = 50 -- Amount of fertilizer that is added
-
 Shared.GrowTime = 180 -- Time in minutes for a plant to grow from 0 to 100
 Shared.LoopUpdate = 15 -- Time in minutes to perform a loop update for water, nutrition, health, growth, etc.
-Shared.FertilizerUpdate = {14, 20} -- Amount of fertilizer that gets removed every interval
-Shared.WaterUpdate = {14, 20} -- Amount of water that gets removed every interval
-Shared.FertilizerThreshold = {60, 20}
-Shared.WaterThreshold = {60, 20}
-Shared.HealthBaseDecay = {7, 10} -- Amount that health decays when the plant is below a certain threshold for water and nutrition
-Shared.HealthDecayMultiplier = 1.2 -- Multiplier for amount of health that decays when second threshold is reached
+Shared.WaterDecay = 0.4 -- Percent of water that decays every minute
+Shared.FertilizerDecay = 0.4 -- Percent of fertilizers that decays every minute
+
+Shared.FertilizerThreshold = 40
+Shared.WaterThreshold = 40
+Shared.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plant is below the above thresholds for water and nutrition
 
 --- Weedrun Related Settings
 Shared.WeedRunStart = vector4(428.19, -1515.52, 29.29, 203.72)
@@ -72,24 +90,3 @@ Shared.DropOffPeds = { -- Drop-off ped models
 	'a_m_y_epsilon_02',
 	'a_m_y_mexthug_01'
 }
-
---- Items
-Shared.MaleSeed = 'weedplant_seedm'
-Shared.FemaleSeed = 'weedplant_seedf'
-Shared.FertilizerItem = 'weed_nutrition'
-Shared.WaterItem = 'water_bottle'
-Shared.BranchItem = 'weedplant_branch'
-Shared.WeedItem = 'weedplant_weed'
-Shared.PackedWeedItem = 'weedplant_packedweed'
-Shared.SusPackageItem = 'weedplant_package'
-
---- Props
-Shared.WeedProps = {
-    [1] = `bkr_prop_weed_01_small_01b`,
-    [2] = `bkr_prop_weed_med_01a`,
-    [3] = `bkr_prop_weed_med_01b`,
-    [4] = `bkr_prop_weed_lrg_01a`,
-    [5] = `bkr_prop_weed_lrg_01b`
-}
-
-Shared.PackageProp = `prop_mp_drug_package`

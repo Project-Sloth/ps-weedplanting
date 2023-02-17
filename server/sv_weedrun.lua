@@ -14,9 +14,7 @@ RegisterNetEvent('ps-weedplanting:server:CollectPackageGoods', function()
     elseif packageCache[citizenid] == 'done' then
         packageCache[citizenid] = nil
         TriggerClientEvent('ps-weedplanting:client:PackageGoodsReceived', src)
-        if Shared.Inventory == 'exports' and exports['qb-inventory']:AddItem(src, Shared.SusPackageItem, 1) then
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.SusPackageItem], 'add', 1)
-        elseif Shared.Inventory == 'player' and Player.Functions.AddItem(Shared.SusPackageItem, 1) then
+        if Player.Functions.AddItem(Shared.SusPackageItem, 1) then
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.SusPackageItem], 'add', 1)
         end
     end
@@ -38,12 +36,7 @@ RegisterNetEvent('ps-weedplanting:server:WeedrunDelivery', function()
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
 
-    if Shared.Inventory == 'exports' and exports['qb-inventory']:RemoveItem(src, Shared.SusPackageItem, 1) then
-        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.SusPackageItem], 'remove', 1)
-        Wait(2000)
-        local payout = math.random(Shared.PayOut[1], Shared.PayOut[2])
-        Player.Functions.AddMoney('cash', payout)
-    elseif Shared.Inventory == 'player' and Player.Functions.RemoveItem(Shared.SusPackageItem, 1) then
+    if Player.Functions.RemoveItem(Shared.SusPackageItem, 1) then
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.SusPackageItem], 'remove', 1)
         Wait(2000)
         local payout = math.random(Shared.PayOut[1], Shared.PayOut[2])
@@ -63,9 +56,7 @@ QBCore.Functions.CreateCallback('ps-weedplanting:server:PackageGoods', function(
         return
     end
     
-    if Shared.Inventory == 'exports' and exports['qb-inventory']:RemoveItem(src, Shared.PackedWeedItem, 1) then
-        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.PackedWeedItem], 'remove', 1)
-    elseif Shared.Inventory == 'player' and Player.Functions.RemoveItem(Shared.PackedWeedItem, 1) then
+    if Player.Functions.RemoveItem(Shared.PackedWeedItem, 1) then
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.PackedWeedItem], 'remove', 1)
     else
         cb(false)
