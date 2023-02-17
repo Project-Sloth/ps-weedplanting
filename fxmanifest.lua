@@ -14,14 +14,14 @@ shared_scripts {
 client_scripts{
     '@PolyZone/client.lua',
     '@PolyZone/CircleZone.lua',
-    'client/cl_main.lua',
     'client/cl_planting.lua',
+    'client/cl_processing.lua',
     'client/cl_weedrun.lua'
 } 
 server_script {
     '@oxmysql/lib/MySQL.lua',
-    'server/sv_main.lua',
     'server/sv_planting.lua',
+    'server/sv_processing.lua',
     'server/sv_weedrun.lua'
 }
 
