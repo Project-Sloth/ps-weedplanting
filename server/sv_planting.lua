@@ -81,6 +81,7 @@ local calcHealth = function(k)
         local fertilizer_amount
         if #WeedPlants[k].fertilizer == 0 then
             fertilizer_amount = 0
+            health -= math.random(Shared.HealthBaseDecay[1], Shared.HealthBaseDecay[2])
         else
             local last_fertilizer = math.huge
             for i=1, #WeedPlants[k].fertilizer, 1 do
@@ -98,6 +99,7 @@ local calcHealth = function(k)
         local water_amount
         if #WeedPlants[k].water == 0 then
             water_amount = 0
+            health -= math.random(Shared.HealthBaseDecay[1], Shared.HealthBaseDecay[2])
         else
             local last_water = math.huge
             for i=1, #WeedPlants[k].water, 1 do
