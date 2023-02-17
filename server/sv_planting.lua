@@ -25,15 +25,6 @@ local calcStage = function(growth)
     return stage
 end
 
---- Method to calculate the health percentage for a given WeedPlants index
---- @param k number - WeedPlants table index
---- @return retval number - health index [0-100]
-local calcHealth = function(k)
-    if not WeedPlants[k] then return false end
-    local current_time = os.time()
-    return 100
-end
-
 --- Method to calculate the current fertilizer percentage for a given WeedPlants index
 --- @param k number - WeedPlants table index
 --- @return retval number - fertilizer index [0-100]
@@ -68,6 +59,60 @@ local calcWater = function(k)
         local retval = math.max(water, 0.00)
         return retval
     end
+end
+
+--- Method to calculate the health percentage for a given WeedPlants index
+--- @param k number - WeedPlants table index
+--- @return health number - health index [0-100]
+local calcHealth = function(k)
+    if not WeedPlants[k] then return false end
+    local health = 100
+    local current_time = os.time()
+    local planted_time = WeedPlants[k].time
+    local elapsed_time = os.difftime(current_time, planted_time)
+    local intervals = math.floor(elapsed_time / 60 / Shared.LoopUpdate)
+    if intervals == 0 then return 100 end
+
+    for i=1, intervals, 1 do
+        -- check current water and fertilizer levels at every interval timestamp, if below thresholds, remove some health
+        local interval_time = planted_time + (i * Shared.LoopUpdate * 60)
+
+        -- fertilizer at interval_time amount:
+        local fertilizer_amount
+        if #WeedPlants[k].fertilizer == 0 then
+            fertilizer_amount = 0
+        else
+            local last_fertilizer = math.huge
+            for i=1, #WeedPlants[k].fertilizer, 1 do
+                last_fertilizer = last_fertilizer < WeedPlants[k].fertilizer[i] and last_fertilizer or WeedPlants[k].fertilizer[i]
+            end
+            local time_since_fertilizer = os.difftime(interval_time, last_fertilizer)
+
+            fertilizer_amount = math.max(QBCore.Shared.Round(100 - (time_since_fertilizer / 60 * Shared.FertilizerDecay), 2), 0.00)
+            if fertilizer_amount < Shared.FertilizerThreshold then
+                health -= math.random(Shared.HealthBaseDecay[1], Shared.HealthBaseDecay[2])
+            end
+        end
+
+        -- water at interval_time amount:
+        local water_amount
+        if #WeedPlants[k].water == 0 then
+            water_amount = 0
+        else
+            local last_water = math.huge
+            for i=1, #WeedPlants[k].water, 1 do
+                last_water = last_water < WeedPlants[k].water[i] and last_water or WeedPlants[k].water[i]
+            end
+            local time_since_water = os.difftime(interval_time, last_water)
+
+            water_amount = math.max(QBCore.Shared.Round(100 - (time_since_water / 60 * Shared.WaterDecay), 2), 0.00)
+            if water_amount < Shared.WaterThreshold then
+                health -= math.random(Shared.HealthBaseDecay[1], Shared.HealthBaseDecay[2])
+            end
+        end
+    end
+
+    return math.max(health, 0.0)
 end
 
 --- Method to setup all the weedplants, fetched from the database
@@ -122,11 +167,38 @@ local updatePlantProp = function(k, stage)
     WeedPlants[k] = nil
 end
 
+--- Method to perform an update on every weedplant, updating their prop if needed, repeats every Shared.LoopUpdate minutes
+--- @return nil
+updatePlants = function()
+    for k, v in pairs(WeedPlants) do
+        local growth = calcGrowth(k)
+        local stage = calcStage(growth)
+        if stage ~= v.stage then
+            WeedPlants[k].stage = stage
+            updatePlantProp(k, stage)
+        end
+    end
+
+    SetTimeout(Shared.LoopUpdate * 60 * 1000, updatePlants)
+end
+
 --- Resource start/stop events
 
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     setupPlants()
+    if Shared.ClearOnStartup then
+        Wait(5000) -- Wait 5 seconds to allow all functions to be executed on startup
+        for k, v in pairs(WeedPlants) do
+            if calcHealth(k) == 0 then
+                DeleteEntity(k)
+                MySQL.query('DELETE from weedplants WHERE id = :id', {
+                    ['id'] = WeedPlants[k].id
+                })
+                WeedPlants[k] = nil
+            end
+        end
+    end
 end)
 
 AddEventHandler('onResourceStop', function(resource)
@@ -324,5 +396,5 @@ end)
 
 CreateThread(function()
     Wait(Shared.LoopUpdate * 60 * 1000)
-
+    updatePlants()
 end)
