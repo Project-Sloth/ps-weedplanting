@@ -1,13 +1,18 @@
-# Weed Planting 
+# Project Sloth Weed Planting 
 
-For all support questions, ask in our Discord support chat. Do not create issues if you need help. Issues are for bug reporting and new features only.
+Script provides the convenience of planting weed anywhere using both male and female seeds, along with additional features like watering, harvesting branches, drying, and packing the weed.
 
- https://www.discord.gg/projectsloth
+For all support questions, ask in our [Discord](https://www.discord.gg/projectsloth) support chat. Do not create issues if you need help. Issues are for bug reporting and new features only.
 
-## Dependencies
+# Preview
+![image](https://user-images.githubusercontent.com/82112471/221007957-34e1641e-1cc0-469a-8bf1-33315ef1bdf0.png)
+![image](https://user-images.githubusercontent.com/82112471/221006801-4639fe6e-3a07-4d27-b0e1-90e1134829fd.png)
+![image](https://user-images.githubusercontent.com/82112471/221007532-bd50ae14-5927-4d7e-90fb-b2c1c9b0c467.png)
+
+# Dependencies
 
 - [QBCore](https://github.com/qbcore-framework/qb-core)
-- [Ox MySQL](https://github.com/overextended/oxmysql)
+- [oxmysql](https://github.com/overextended/oxmysql)
 
 # Installation
 * Download ZIP
