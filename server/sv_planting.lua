@@ -343,7 +343,7 @@ RegisterNetEvent('ps-weedplanting:server:CreateNewPlant', function(coords)
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Shared.rayCastingDistance + 10 then return end
-    if exports['qb-inventory']:RemoveItem(src, Shared.FemaleSeed, 1) then
+    if Player.Functions.RemoveItem(Shared.FemaleSeed, 1) then
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FemaleSeed], 'remove', 1)
         local ModelHash = Shared.WeedProps[1]
         local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z + Shared.ObjectZOffset, true, true, false)
