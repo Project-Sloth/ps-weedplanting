@@ -270,11 +270,12 @@ RegisterNetEvent('ps-weedplanting:server:PoliceDestroy', function(netId)
         MySQL.query('DELETE from weedplants WHERE id = :id', {
             ['id'] = WeedPlants[entity].id
         })
-        WeedPlants[entity] = nil
 
         TriggerClientEvent('ps-weedplanting:client:FireGoBrrrrrrr', -1, WeedPlants[entity].coords)
         Wait(Shared.FireTime)
         DeleteEntity(entity)
+
+        WeedPlants[entity] = nil
     end
 end)
 
