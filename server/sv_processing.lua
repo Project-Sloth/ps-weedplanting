@@ -34,6 +34,7 @@ QBCore.Functions.CreateUseableItem(Shared.BranchItem, function(source)
 end)
 
 QBCore.Functions.CreateUseableItem(Shared.WeedItem, function(source, item)
+    local src = source
     if item and item.amount >= 20 then
         TriggerClientEvent('ps-weedplanting:client:UseDryWeed', source)
     else
