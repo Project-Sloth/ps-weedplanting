@@ -1,5 +1,5 @@
 local Locales = {
-    ['place_sapling'] = 'Placing Sapling..',
+    	['place_sapling'] = 'Placing Sapling..',
 	['canceled'] = 'Canceled..',
 	['place_or_cancel'] = '[E] - Place Plant / [G] - Cancel',
 	['missing_filling_water'] = 'You are missing something to fill the water..',
@@ -40,7 +40,7 @@ local Locales = {
 	['grab_packaged_goods'] = 'Grab Package',
 	['start_delivering'] = 'Start Delivering',
 	['stop_delivering'] = 'Stop Delivering',
-    ['dont_have_branch'] = 'You dont have the required items',
+    	['dont_have_branch'] = 'You dont have the required items',
 	['dont_have_enough_dryweed'] = 'You dont have required/enough items',
 	['dont_have_anything'] = 'You don\'t have anything to package for me..',
 	['handing_over_weed'] = 'Handing over packed weed..',
