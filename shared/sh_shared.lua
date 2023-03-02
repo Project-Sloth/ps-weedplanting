@@ -1,8 +1,16 @@
 Shared = Shared or {}
 
+--- Other
+Shared.Debug = false
+Shared.CopJob = "leo"
+Shared.Dispatch = "ps-dispatch"
+
 --- Items
 Shared.MaleSeed = 'weedplant_seedm'
 Shared.FemaleSeed = 'weedplant_seedf'
+Shared.PlantTubItem = 'plant_tub'
+Shared.EmptyCanItem = 'empty_watering_can'
+Shared.FullCanItem = 'full_watering_can'
 Shared.FertilizerItem = 'weed_nutrition'
 Shared.WaterItem = 'water_bottle'
 Shared.BranchItem = 'weedplant_branch'
@@ -19,12 +27,20 @@ Shared.WeedProps = {
     [5] = `bkr_prop_weed_lrg_01b`
 }
 
+Shared.ProcessingProps = {
+    {model = "bkr_prop_weed_table_01a",    coords = vector4(1045.41, -3197.64, -38.13, 270),},
+    {model = "hei_prop_heist_weed_pallet", coords = vector4(1044.89, -3192.6, -37.91, 196.56),},
+    {model = "hei_prop_heist_weed_pallet", coords = vector4(1043.07, -3192.55, -37.91, 183.94),},
+    {model = "hei_prop_heist_weed_pallet", coords = vector4(1041.27, -3192.61, -37.91, 183.98),},
+    {model = "hei_prop_heist_weed_pallet", coords = vector4(1042.64, -3206.14, -37.85, 21.93),},
+}
+
 Shared.PackageProp = `prop_mp_drug_package`
 
 --- Growing Related Settings
 Shared.rayCastingDistance = 7.0 -- distance in meters
 Shared.ClearOnStartup = true -- Clear dead plants on script start-up
-Shared.ObjectZOffset = - 0.5 -- Z-coord offset for WeedProps
+Shared.ObjectZOffset = - 0.01 -- Z-coord offset for WeedProps
 Shared.FireTime = 10000
 
 Shared.GrowTime = 180 -- Time in minutes for a plant to grow from 0 to 100
@@ -41,7 +57,7 @@ Shared.WeedRunStart = vector4(428.19, -1515.52, 29.29, 203.72)
 Shared.PedModel = 'a_m_y_breakdance_01'
 Shared.PackageTime = 2 -- Time in minutes to wait for packaging
 Shared.DeliveryWaitTime = {8, 12} -- Time in seconds (min, max) the player has to wait to receive a new delivery location
-Shared.CallCopsChance = 20 -- 20%
+Shared.CallCopsChance = 100 -- 20%
 Shared.PayOut = {16000, 20000} -- Min/max payout for delivering a suspicious package
 
 Shared.DropOffLocations = { -- Drop-off locations
