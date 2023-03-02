@@ -290,6 +290,8 @@ RegisterNetEvent('ps-weedplanting:server:GiveWater', function(netId)
     if Player.Functions.RemoveItem(Shared.FullCanItem, 1, false) then
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FullCanItem], 'remove', 1)
         TriggerClientEvent('QBCore:Notify', src, _U('watered_plant'), 'success', 2500)
+        Player.Functions.AddItem(Shared.EmptyCanItem, 1, false)
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.EmptyCanItem], 'add', 1)
         
         WeedPlants[entity].water[#WeedPlants[entity].water + 1] = os.time()
         MySQL.update('UPDATE weedplants SET water = (:water) WHERE id = (:id)', {
