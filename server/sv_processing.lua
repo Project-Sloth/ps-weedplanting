@@ -24,20 +24,7 @@ RegisterNetEvent('ps-weedplanting:server:PackageWeed', function()
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WeedItem], 'remove', 20)
         Player.Functions.AddItem(Shared.PackedWeedItem, 1, false)
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.PackedWeedItem], 'add', 1)
-    end
-end)
-
---- Items
-
-QBCore.Functions.CreateUseableItem(Shared.BranchItem, function(source)
-    TriggerClientEvent('ps-weedplanting:client:UseBranch', source)
-end)
-
-QBCore.Functions.CreateUseableItem(Shared.WeedItem, function(source, item)
-    local src = source
-    if item and item.amount >= 20 then
-        TriggerClientEvent('ps-weedplanting:client:UseDryWeed', source)
     else
-        TriggerClientEvent('QBCore:Notify', src, _U('not_enough_dryweed'), 'error', 2500)
+        TriggerClientEvent('QBCore:Notify', src,_U('not_enough_dryweed'), 'error')
     end
 end)
