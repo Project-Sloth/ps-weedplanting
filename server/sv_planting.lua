@@ -263,7 +263,7 @@ RegisterNetEvent('ps-weedplanting:server:PoliceDestroy', function(netId)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
-    if Player.PlayerData.job.type ~= 'leo' then return end
+    if Player.PlayerData.job.type ~= Shared.CopJob then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - WeedPlants[entity].coords) > 10 then return end
 
     if DoesEntityExist(entity) then
@@ -287,8 +287,8 @@ RegisterNetEvent('ps-weedplanting:server:GiveWater', function(netId)
     if not Player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - WeedPlants[entity].coords) > 10 then return end
 
-    if Player.Functions.RemoveItem(Shared.WaterItem, 1, false) then
-        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WaterItem], 'remove', 1)
+    if Player.Functions.RemoveItem(Shared.FullCanItem, 1, false) then
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FullCanItem], 'remove', 1)
         TriggerClientEvent('QBCore:Notify', src, _U('watered_plant'), 'success', 2500)
         
         WeedPlants[entity].water[#WeedPlants[entity].water + 1] = os.time()
@@ -344,8 +344,9 @@ RegisterNetEvent('ps-weedplanting:server:CreateNewPlant', function(coords)
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Shared.rayCastingDistance + 10 then return end
-    if Player.Functions.RemoveItem(Shared.FemaleSeed, 1) then
+    if Player.Functions.RemoveItem(Shared.FemaleSeed, 1) and Player.Functions.RemoveItem(Shared.PlantTubItem, 1) then
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FemaleSeed], 'remove', 1)
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.PlantTubItem], 'remove', 1)
         local ModelHash = Shared.WeedProps[1]
         local plant = CreateObjectNoOffset(ModelHash, coords.x, coords.y, coords.z + Shared.ObjectZOffset, true, true, false)
         FreezeEntityPosition(plant, true)
@@ -366,6 +367,20 @@ RegisterNetEvent('ps-weedplanting:server:CreateNewPlant', function(coords)
                 gender = 'female'
             }
         end)
+    end
+end)
+
+RegisterNetEvent('ps-weedplanting:server:GetFullWateringCan', function(netId)
+   
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    
+    if Player.Functions.RemoveItem(Shared.EmptyCanItem, 1, false) and Player.Functions.RemoveItem(Shared.WaterItem, 1, false) then
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.EmptyCanItem], 'remove', 1)
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WaterItem], 'remove', 1)
+        TriggerClientEvent('QBCore:Notify', src, _U('filled_can'), 'success', 2500)
+        Player.Functions.AddItem(Shared.FullCanItem, 1, false)
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FullCanItem], 'add', 1)
     end
 end)
 
@@ -391,7 +406,20 @@ end)
 --- Items
 
 QBCore.Functions.CreateUseableItem(Shared.FemaleSeed, function(source)
-    TriggerClientEvent("ps-weedplanting:client:UseWeedSeed", source)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+    local tub = Player.Functions.GetItemByName(Shared.PlantTubItem)
+	
+    if tub ~= nil then
+        TriggerClientEvent("ps-weedplanting:client:UseWeedSeed", source)
+    else
+        TriggerClientEvent('QBCore:Notify', src, _U('missing_tub'), 'error', 2500)
+    end
+end)
+
+QBCore.Functions.CreateUseableItem(Shared.EmptyCanItem, function(source)
+    local src = source
+    TriggerClientEvent("ps-weedplanting:client:OpenFillWaterMenu", src)
 end)
 
 
