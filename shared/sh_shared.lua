@@ -40,7 +40,7 @@ Shared.PackageProp = `prop_mp_drug_package`
 --- Growing Related Settings
 Shared.rayCastingDistance = 7.0 -- distance in meters
 Shared.ClearOnStartup = true -- Clear dead plants on script start-up
-Shared.ObjectZOffset = - 0.01 -- Z-coord offset for WeedProps
+Shared.ObjectZOffset = - 0.2 -- Z-coord offset for WeedProps
 Shared.FireTime = 10000
 
 Shared.GrowTime = 180 -- Time in minutes for a plant to grow from 0 to 100
