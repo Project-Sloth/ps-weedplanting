@@ -57,7 +57,7 @@ Shared.WeedRunStart = vector4(428.19, -1515.52, 29.29, 203.72)
 Shared.PedModel = 'a_m_y_breakdance_01'
 Shared.PackageTime = 2 -- Time in minutes to wait for packaging
 Shared.DeliveryWaitTime = {8, 12} -- Time in seconds (min, max) the player has to wait to receive a new delivery location
-Shared.CallCopsChance = 100 -- 20%
+Shared.CallCopsChance = 20 -- 20%
 Shared.PayOut = {16000, 20000} -- Min/max payout for delivering a suspicious package
 
 Shared.DropOffLocations = { -- Drop-off locations
