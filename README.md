@@ -13,9 +13,8 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 
 # Processing Location
 
-```
 /tp 1041.77, -3199.31, -38.16
-```
+
 # Dependencies
 
 - [QBCore](https://github.com/qbcore-framework/qb-core)
