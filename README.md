@@ -11,10 +11,6 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ![image](https://user-images.githubusercontent.com/82112471/221007532-bd50ae14-5927-4d7e-90fb-b2c1c9b0c467.png)
 ![image](https://user-images.githubusercontent.com/107671912/222414486-e789257e-f9f4-4152-a8d0-738be9d13fa7.png)
 
-# Processing Location
-
-/tp 1041.77, -3199.31, -38.16
-
 # Dependencies
 
 - [QBCore](https://github.com/qbcore-framework/qb-core)
