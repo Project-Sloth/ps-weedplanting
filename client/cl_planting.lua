@@ -139,7 +139,7 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
                 }
             })
         elseif result.growth == 100 then -- Harvest
-            if PlayerJob.type == 'leo' and PlayerJob.onduty then
+            if PlayerJob.type == Shared.CopJob and PlayerJob.onduty then
                 exports['qb-menu']:openMenu({
                     {
                         header = _U('plant_header'),
@@ -190,7 +190,7 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
                 })
             end
         elseif result.gender == 'female' then -- Option to add male seed
-            if PlayerJob.type == 'leo' and PlayerJob.onduty then
+            if PlayerJob.type == Shared.CopJob and PlayerJob.onduty then
                 exports['qb-menu']:openMenu({
                     {
                         header = _U('plant_header'),
@@ -262,7 +262,7 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
                 })
             end
         else -- No option to add male seed
-            if PlayerJob.type == 'leo' and PlayerJob.onduty then
+            if PlayerJob.type == Shared.CopJob and PlayerJob.onduty then
                 exports['qb-menu']:openMenu({
                     {
                         header = _U('plant_header'),
@@ -427,7 +427,7 @@ RegisterNetEvent('ps-weedplanting:client:FireGoBrrrrrrr', function(coords)
 end)
 
 RegisterNetEvent('ps-weedplanting:client:GiveWater', function(entity)
-    if QBCore.Functions.HasItem(Shared.WaterItem, 1) then
+    if QBCore.Functions.HasItem(Shared.FullCanItem, 1) then
         local netId = NetworkGetNetworkIdFromEntity(entity)
         local ped = PlayerPedId()
         local coords = GetEntityCoords(ped)
@@ -464,6 +464,48 @@ RegisterNetEvent('ps-weedplanting:client:GiveWater', function(entity)
     else
         QBCore.Functions.Notify(_U('missing_water'), 'error', 2500)
     end
+end)
+
+RegisterNetEvent('ps-weedplanting:client:OpenFillWaterMenu', function()
+    exports['qb-menu']:openMenu({
+        {
+            header = _U('empty_watering_can_header'),
+            txt = _U('esc_to_close'),
+            icon = 'fas fa-chevron-left',
+            params = {
+                event = 'qb-menu:closeMenu'
+            }
+        },
+        {
+            header = _U('fill_can_header'),
+            txt = _U('fill_can_text'),
+            icon = 'fa-solid fa-oil-can',
+            params = {
+                event = 'ps-weedplanting:client:FillWater',
+            }
+        }
+    })
+end)
+
+RegisterNetEvent('ps-weedplanting:client:FillWater', function()
+
+    local hasItem = QBCore.Functions.HasItem(Shared.WaterItem)
+    
+    if not hasItem then
+        QBCore.Functions.Notify(_U('missing_filling_water'), 'error', 2500)
+        return
+    end
+
+    QBCore.Functions.Progressbar('filling_water', _U('filling_water'), 2000, false, true, {
+        disableMovement = true,
+        disableCarMovement = true,
+        disableMouse = false,
+        disableCombat = true,
+    }, {}, {}, {}, function()
+        TriggerServerEvent('ps-weedplanting:server:GetFullWateringCan')
+    end, function() -- Cancel
+        QBCore.Functions.Notify(_U('canceled'), 'error', 2500)
+    end)
 end)
 
 RegisterNetEvent('ps-weedplanting:client:GiveFertilizer', function(entity)

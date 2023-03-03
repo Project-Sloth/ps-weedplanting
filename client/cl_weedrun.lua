@@ -113,7 +113,7 @@ local createNewDropOff = function()
     createDropOffBlip(randomLoc)
     dropOffArea = CircleZone:Create(randomLoc.xyz, 85.0, {
 		name = 'dropOffArea',
-		debugPoly = true
+		debugPoly = Shared.Debug
 	})
 
 	dropOffArea:onPlayerInOut(function(isPointInside, point)
@@ -186,7 +186,7 @@ RegisterNetEvent('ps-weedplanting:client:StartPackage', function(data)
     
             packageZone = CircleZone:Create(Shared.WeedRunStart.xyz, 10.0, {
                 name = 'weedrunning_start',
-                debugPoly = false
+                debugPoly = Shared.Debug
             })
             
             packageZone:onPlayerInOut(function(isPointInside, point)
@@ -241,7 +241,7 @@ RegisterNetEvent('ps-weedplanting:client:DeliverWeed', function()
         return
     end
 
-	local ped = PlayerPedId()
+    local ped = PlayerPedId()
 	if not IsPedOnFoot(ped) then return end
 	if #(GetEntityCoords(ped) - GetEntityCoords(deliveryPed)) < 5.0 then
 		madeDeal = true
@@ -249,8 +249,8 @@ RegisterNetEvent('ps-weedplanting:client:DeliverWeed', function()
 
 		-- Alert Cops
 		if math.random(100) <= Shared.CallCopsChance then
-            if GetResourceState('ps-dispatch') == 'started' then
-                exports['ps-dispatch']:DrugSale() -- Project-SLoth ps-dispatch
+            if GetResourceState(Shared.Dispatch) == 'started' then
+                exports[Shared.Dispatch]:DrugSale() -- Project-SLoth ps-dispatch
             end
         end
         
@@ -299,59 +299,61 @@ RegisterNetEvent('ps-weedplanting:client:DeliverWeed', function()
 	end
 end)
 
---- Threads
-
 CreateThread(function()
-    exports['qb-target']:SpawnPed({
-        model = Shared.PedModel,
-        coords = Shared.WeedRunStart,
-        minusOne = true,
-        freeze = true,
-        invincible = true,
-        blockevents = true,
-        animDict = 'anim@mp_celebration@idles@female',
-        anim = 'celebration_idle_f_a',
-        flag = 0,
-        target = {
-            options = {
-                { -- Create Package
-                    type = 'client',
-                    event = 'ps-weedplanting:client:StartPackage',
-                    icon = 'fas fa-circle-chevron-right',
-                    label = _U('package_goods'),
-                    canInteract = function()
-                        return not waitingForPackage
-                    end
-                },
-                { -- Receive Package
-                    type = 'server',
-                    event = 'ps-weedplanting:server:CollectPackageGoods',
-                    icon = 'fas fa-circle-chevron-right',
-                    label = _U('grab_packaged_goods'),
-                    canInteract = function()
-                        return waitingForPackage
-                    end
-                },
-                { -- Clock In for deliveries
-                    type = 'client',
-                    event = 'ps-weedplanting:client:ClockIn',
-                    icon = 'fas fa-stopwatch',
-                    label = _U('start_delivering'),
-                    canInteract = function()
-                        return not delivering
-                    end
-                },
-                { -- Clock out for deliveries
-                    type = 'client',
-                    event = 'ps-weedplanting:client:ClockOut',
-                    icon = 'fas fa-stopwatch',
-                    label = _U('stop_delivering'),
-                    canInteract = function()
-                        return delivering
-                    end
-                }
+    local ped = nil
+
+    RequestModel(Shared.PedModel) while not HasModelLoaded(Shared.PedModel) do Wait(0) end
+    ped = CreatePed(0, Shared.PedModel,  vector4(Shared.WeedRunStart.x, Shared.WeedRunStart.y, Shared.WeedRunStart.z - 1, Shared.WeedRunStart.w ), false, false)
+    SetEntityInvincible(ped, true)
+	SetBlockingOfNonTemporaryEvents(ped, true)
+	FreezeEntityPosition(ped, true)
+    TaskStartScenarioInPlace(ped,"WORLD_HUMAN_DRUG_DEALER", -1, true)
+
+    exports['qb-target']:AddBoxZone('weed-run-zone', vector3(Shared.WeedRunStart.x, Shared.WeedRunStart.y, Shared.WeedRunStart.z), 0.8, 0.8, {
+        name = 'weed-run-zone',
+        heading = Shared.WeedRunStart.w,
+        minZ = Shared.WeedRunStart.z - 1,
+        maxZ = Shared.WeedRunStart.z + 1,
+        debugPoly = Shared.Debug,
+    }, {
+        options = {
+            { -- Create Package
+                type = 'client',
+                event = 'ps-weedplanting:client:StartPackage',
+                icon = 'fas fa-circle-chevron-right',
+                label = _U('package_goods'),
+                canInteract = function()
+                    return not waitingForPackage
+                end
             },
-            distance = 1.5
-        }
+            { -- Receive Package
+                type = 'server',
+                event = 'ps-weedplanting:server:CollectPackageGoods',
+                icon = 'fas fa-circle-chevron-right',
+                label = _U('grab_packaged_goods'),
+                canInteract = function()
+                    return waitingForPackage
+                end
+            },
+            { -- Clock In for deliveries
+                type = 'client',
+                event = 'ps-weedplanting:client:ClockIn',
+                icon = 'fas fa-stopwatch',
+                label = _U('start_delivering'),
+                canInteract = function()
+                    return not delivering
+                end
+            },
+            { -- Clock out for deliveries
+                type = 'client',
+                event = 'ps-weedplanting:client:ClockOut',
+                icon = 'fas fa-stopwatch',
+                label = _U('stop_delivering'),
+                canInteract = function()
+                    return delivering
+                end
+            }
+        },
+        distance = 1.5
     })
 end)
