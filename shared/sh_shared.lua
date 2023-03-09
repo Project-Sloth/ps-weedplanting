@@ -17,6 +17,14 @@ Shared.BranchItem = 'weedplant_branch'
 Shared.WeedItem = 'weedplant_weed'
 Shared.PackedWeedItem = 'weedplant_packedweed'
 Shared.SusPackageItem = 'weedplant_package'
+Shared.LabkeyItem = 'keya' -- Key required to enter the weed lab
+
+--- Weed Processing | Weed-Lab
+Shared.WeedLab = {
+    EnableTp = true, -- Set this to false if you do not want to use this teleportation system. 
+    RequireKey = true,  -- Set this to false to disable the requirement of a lab key to enter the weed lab (set to true if you want to use the key)
+    EnableSound = true, --  Set this to false if you dont want the interact sound while exiting / entering the wee lab.
+}
 
 --- Props
 Shared.WeedProps = {
@@ -40,7 +48,7 @@ Shared.PackageProp = `prop_mp_drug_package`
 --- Growing Related Settings
 Shared.rayCastingDistance = 7.0 -- distance in meters
 Shared.ClearOnStartup = true -- Clear dead plants on script start-up
-Shared.ObjectZOffset = - 0.2 -- Z-coord offset for WeedProps
+Shared.ObjectZOffset = - 0.5 -- Z-coord offset for WeedProps
 Shared.FireTime = 10000
 
 Shared.GrowTime = 180 -- Time in minutes for a plant to grow from 0 to 100
