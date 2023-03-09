@@ -12,7 +12,6 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ![image](https://user-images.githubusercontent.com/107671912/222414486-e789257e-f9f4-4152-a8d0-738be9d13fa7.png)
 ![image](https://user-images.githubusercontent.com/107671912/224058250-8635434c-0c16-4ff4-97bf-d3b5d9290a64.png)
 
-
 # Dependencies
 
 - [QBCore](https://github.com/qbcore-framework/qb-core)
