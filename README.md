@@ -43,7 +43,7 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 If you want to use the script's own teleportation system to be able to go inside the weed lab then leave the EnableTp as true. 
 OR 
 If you want to use qb-smallresources default teleport instead of the scripts then go to qb-smallresource > config.lua and add the following lines below Config.Teleports 
-`
+```
     --- Weedlab
     [1] = {
         [1] = {
@@ -58,6 +58,6 @@ If you want to use qb-smallresources default teleport instead of the scripts the
         },
 
     },
-`
+```
 # Credits
 * [Lionh34rt](https://github.com/Lionh34rt) | Check out more scripts from Lionh34rt [here.](https://lionh34rt.tebex.io/category/1954119)
