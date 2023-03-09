@@ -41,7 +41,9 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ```
 ## Weed Processing (Weed Lab)
 If you want to use the script's own teleportation system to be able to go inside the weed lab then leave the EnableTp as true. 
+
 OR 
+
 If you want to use qb-smallresources default teleport instead of the scripts then go to qb-smallresource > config.lua and add the following lines below Config.Teleports 
 ```
     --- Weedlab
