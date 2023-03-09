@@ -40,11 +40,11 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ["keya"]                         = {["name"] = "keya",                          ["label"] = "Labkey A",                 ["weight"] = 0,         ["type"] = "item",      ["image"] = "keya.png",                 ["unique"] = true,      ["useable"] = false,    ["shouldClose"] = false,   ["combinable"] = nil,   ["description"] = "Labkey A.."},
 ```
 ## Weed Processing (Weed Lab)
-If you want to use the script's own teleportation system to be able to go inside the weed lab then leave the EnableTp as true. 
+If you want to use the script's own teleport system to go inside the weed lab then leave the `EnableTp = true`on line 24.
 
 OR 
 
-If you want to use qb-smallresources default teleport instead of the scripts then go to qb-smallresource > config.lua and add the following lines below Config.Teleports 
+If you want to use qb-smallresources default teleport instead of the scripts then go to `qb-smallresource > config.lua` and add the following lines below `Config.Teleports` 
 ```
     --- Weedlab
     [1] = {
