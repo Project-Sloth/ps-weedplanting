@@ -40,7 +40,7 @@ local Locales = {
 	['grab_packaged_goods'] = 'Grab Package',
 	['start_delivering'] = 'Start Delivering',
 	['stop_delivering'] = 'Stop Delivering',
-    	['dont_have_branch'] = 'You dont have the required items',
+    ['dont_have_branch'] = 'You dont have the required items',
 	['dont_have_enough_dryweed'] = 'You dont have required/enough items',
 	['dont_have_anything'] = 'You don\'t have anything to package for me..',
 	['handing_over_weed'] = 'Handing over packed weed..',
@@ -55,7 +55,10 @@ local Locales = {
 	['weedrun_delivery_godropoff'] = 'Make your way to the drop-off..',
 	['weedrun_delivery_makedropoff'] = 'Make the delivery..',
 	['weedrun_delivery_waitfornew'] = 'Wait for a new location..',
-	['weedrun_delivery_success'] = 'Delivery was good, you will be updated with the next drop-off..'
+	['weedrun_delivery_success'] = 'Delivery was good, you will be updated with the next drop-off..',
+	['dont_have_key'] = 'You dont have the required key..',
+	['enter_weedlab'] = 'Enter Lab',
+	['exit_weedlab'] = 'Exit Lab',
 }
 
 function _U(entry)
