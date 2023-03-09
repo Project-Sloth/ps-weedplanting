@@ -10,10 +10,8 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ![image](https://user-images.githubusercontent.com/82112471/221007532-bd50ae14-5927-4d7e-90fb-b2c1c9b0c467.png)
 ![image](https://user-images.githubusercontent.com/82112471/221007532-bd50ae14-5927-4d7e-90fb-b2c1c9b0c467.png)
 ![image](https://user-images.githubusercontent.com/107671912/222414486-e789257e-f9f4-4152-a8d0-738be9d13fa7.png)
+![image](https://user-images.githubusercontent.com/107671912/224058250-8635434c-0c16-4ff4-97bf-d3b5d9290a64.png)
 
-# Processing Location
-
-/tp 1041.77, -3199.31, -38.16
 
 # Dependencies
 
@@ -39,6 +37,26 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ['plant_tub'] 			         = {['name'] = 'plant_tub', 			        ['label'] = 'Plant Tub', 		     	['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'plant_tub.png', 		    ['unique'] = false, 	['useable'] = false, 	['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'Pot for planting plants'},
 ['empty_watering_can'] 			 = {['name'] = 'empty_watering_can', 			['label'] = 'Empty Watering Can', 		['weight'] = 500, 		['type'] = 'item', 		['image'] = 'watering_can.png', 	    ['unique'] = true, 	    ['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Empty watering can'},
 ['full_watering_can'] 			 = {['name'] = 'full_watering_can', 			['label'] = 'Full Watering Can', 		['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'watering_can.png', 	    ['unique'] = true, 	    ['useable'] = false, 	['shouldClose'] = false,	   ['combinable'] = nil,   ['description'] = 'Watering can filled with water for watering plants'},
+["keya"]                         = {["name"] = "keya",                          ["label"] = "Labkey A",                 ["weight"] = 0,         ["type"] = "item",      ["image"] = "keya.png",                 ["unique"] = true,      ["useable"] = false,    ["shouldClose"] = false,   ["combinable"] = nil,   ["description"] = "Labkey A.."},
 ```
+## Weed Processing (Weed Lab)
+If you want to use the script's own teleportation system to be able to go inside the weed lab then leave the EnableTp as true. 
+OR 
+If you want to use qb-smallresources default teleport instead of the scripts then go to qb-smallresource > config.lua and add the following lines below Config.Teleports 
+`    --- Weedlab
+    [1] = {
+        [1] = {
+            coords = vector4(1066.2, -3183.38, -39.16, 89.3),
+            ["AllowVehicle"] = false,
+            drawText = '[E] Exit Lab'
+        },
+        [2] = {
+            coords = vector4(-66.95, -1312.37, 29.28, 180.95),
+            ["AllowVehicle"] = false,
+            drawText = '[E] Enter Lab'
+        },
+
+    },
+`
 # Credits
 * [Lionh34rt](https://github.com/Lionh34rt) | Check out more scripts from Lionh34rt [here.](https://lionh34rt.tebex.io/category/1954119)
