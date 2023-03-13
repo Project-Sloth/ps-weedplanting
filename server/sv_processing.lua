@@ -5,11 +5,11 @@ RegisterNetEvent('ps-weedplanting:server:ProcessBranch', function()
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     local item = Player.Functions.GetItemByName(Shared.BranchItem)
-    if item and item.info.health then
+    if item then
         if Player.Functions.RemoveItem(Shared.BranchItem, 1, item.slot) then
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.BranchItem], 'remove', 1)
-            Player.Functions.AddItem(Shared.WeedItem, item.info.health, false)
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WeedItem], 'add', item.info.health)
+            Player.Functions.AddItem(Shared.WeedItem, 2, false) -- Change number given to desired number.
+            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WeedItem], 'add', 2)
         end
     end
 end)
