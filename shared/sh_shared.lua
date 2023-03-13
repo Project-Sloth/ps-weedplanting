@@ -17,6 +17,14 @@ Shared.BranchItem = 'weedplant_branch'
 Shared.WeedItem = 'weedplant_weed'
 Shared.PackedWeedItem = 'weedplant_packedweed'
 Shared.SusPackageItem = 'weedplant_package'
+Shared.LabkeyItem = 'keya' -- Key required to enter the weed lab
+
+--- Weed Processing | Weed-Lab
+Shared.WeedLab = {
+    EnableTp = true, -- Set this to false if you do not want to use this teleportation system. 
+    RequireKey = true,  -- Set this to false to disable the requirement of a lab key to enter the weed lab (set to true if you want to use the key)
+    EnableSound = true, --  Set this to false if you dont want the interact sound while exiting / entering the wee lab.
+}
 
 --- Props
 Shared.WeedProps = {
