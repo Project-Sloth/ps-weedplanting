@@ -26,6 +26,8 @@ Shared.WeedLab = {
     EnableSound = true, --  Set this to false if you dont want the interact sound while exiting / entering the wee lab.
 }
 
+Shared.ProcessingHealthFallback = 25 -- fallback if item.info.health is nil
+
 --- Props
 Shared.WeedProps = {
     [1] = `bkr_prop_weed_01_small_01b`,
@@ -63,6 +65,7 @@ Shared.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plan
 --- Weedrun Related Settings
 Shared.WeedRunStart = vector4(428.19, -1515.52, 29.29, 203.72)
 Shared.PedModel = 'a_m_y_breakdance_01'
+Shared.PackageAmount = 20 -- Amount of Shared.WeedItem required to create a package
 Shared.PackageTime = 2 -- Time in minutes to wait for packaging
 Shared.DeliveryWaitTime = {8, 12} -- Time in seconds (min, max) the player has to wait to receive a new delivery location
 Shared.CallCopsChance = 20 -- 20%
