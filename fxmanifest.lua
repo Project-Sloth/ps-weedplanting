@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-version '1.0'
+version '1.6'
 description 'Project Sloth Weedplanting script'
 author 'Lionh34rt'
 
