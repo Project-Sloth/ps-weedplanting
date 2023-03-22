@@ -59,6 +59,7 @@ local Locales = {
 	['dont_have_key'] = 'You dont have the required key..',
 	['enter_weedlab'] = 'Enter Lab',
 	['exit_weedlab'] = 'Exit Lab',
+	['police_burn'] = 'Burn the plant and remove pot.',
 }
 
 function _U(entry)

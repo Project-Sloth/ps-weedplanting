@@ -160,7 +160,7 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
                     },
                     {
                         header = _U('destroy_plant'),
-                        txt = _U('ready_for_harvest'),
+                        txt = _U('police_burn'),
                         icon = 'fas fa-fire',
                         params = {
                             event = 'ps-weedplanting:client:PoliceDestroy',
@@ -208,7 +208,7 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
                     },
                     {
                         header = _U('destroy_plant'),
-                        txt = _U('ready_for_harvest'),
+                        txt = _U('police_burn'),
                         icon = 'fas fa-fire',
                         params = {
                             event = 'ps-weedplanting:client:PoliceDestroy',
@@ -280,7 +280,7 @@ RegisterNetEvent('ps-weedplanting:client:CheckPlant', function(data)
                     },
                     {
                         header = _U('destroy_plant'),
-                        txt = _U('ready_for_harvest'),
+                        txt = _U('police_burn'),
                         icon = 'fas fa-fire',
                         params = {
                             event = 'ps-weedplanting:client:PoliceDestroy',
