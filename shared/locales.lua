@@ -34,7 +34,6 @@ local Locales = {
 	['add_fertilizer'] = 'Add fertilizer to the plant',
 	['add_mseed'] = 'Add male seeds',
 	['not_enough_dryweed'] = 'You don\'t have enough dried weed..',
-	['not_enough_dryweed'] = 'There were not enough dry weeds to pack..',
 	['packaging_weed'] = 'Packaging..',
 	['package_goods'] = 'Package Goods',
 	['grab_packaged_goods'] = 'Grab Package',
