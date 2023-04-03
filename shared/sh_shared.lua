@@ -37,6 +37,13 @@ Shared.WeedProps = {
     [5] = `bkr_prop_weed_lrg_01b`
 }
 
+Shared.PlantAreas = {
+    ["area1"] = {
+        location = vector3(2037.92, 4908.92, 41.67),
+        size = 50
+    }
+}
+
 Shared.ProcessingProps = {
     {model = "bkr_prop_weed_table_01a",    coords = vector4(1045.41, -3197.64, -38.13, 270),},
     {model = "hei_prop_heist_weed_pallet", coords = vector4(1044.89, -3192.6, -37.91, 196.56),},

@@ -1,6 +1,28 @@
 QBCore = exports['qb-core']:GetCoreObject()
 PlayerJob = QBCore.Functions.GetPlayerData().job
 local seedUsed = false
+local seedZones = {}
+local seedlocation
+local canplant = false
+
+for k, v in pairs(Shared.PlantAreas) do
+    seedlocation = v.location
+    seedZones[#seedZones+1] = CircleZone:Create(vector3(seedlocation.x, seedlocation.y, seedlocation.z), v.size, {
+        name="seed_zone",
+        debugPoly = true,
+    })
+end
+
+Citizen.CreateThread(function()
+    local seedCombo = ComboZone:Create(seedZones, {name = "seedCombo", debugPoly = false})
+    seedCombo:onPlayerInOut(function(isPointInside)
+        if isPointInside then
+            canplant = true
+        else
+            canplant = false
+        end
+    end)
+end)
 
 --- Functions
 
@@ -47,6 +69,10 @@ end)
 RegisterNetEvent('ps-weedplanting:client:UseWeedSeed', function()
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then return end
     if seedUsed then return end
+    if not canplant then 
+        TriggerEvent("QBCore:Notify", "You can't plant here!", "error")
+        return
+    end
     seedUsed = true
     local ModelHash = Shared.WeedProps[1]
     RequestModel(ModelHash)
