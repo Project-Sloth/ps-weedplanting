@@ -243,10 +243,14 @@ RegisterNetEvent('ps-weedplanting:server:HarvestPlant', function(netId)
         else -- male seed added
             local mSeeds = math.floor(health / 50)
             local fSeeds = math.floor(health / 20)
-            Player.Functions.AddItem(Shared.MaleSeed, mSeeds, false)
-            Player.Functions.AddItem(Shared.FemaleSeed, fSeeds, false)
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.MaleSeed], 'add', mSeeds)
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FemaleSeed], 'add', fSeeds)
+            if mSeeds > 0 then
+                    Player.Functions.AddItem(Shared.MaleSeed, mSeeds, false)
+                    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.MaleSeed], 'add', mSeeds)
+            end
+            if fSeeds > 0 then
+                    Player.Functions.AddItem(Shared.FemaleSeed, fSeeds, false)
+                    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.FemaleSeed], 'add', fSeeds)
+            end
         end
         
         DeleteEntity(entity)
