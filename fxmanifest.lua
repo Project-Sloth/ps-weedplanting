@@ -22,8 +22,7 @@ server_script {
     '@oxmysql/lib/MySQL.lua',
     'server/sv_planting.lua',
     'server/sv_processing.lua',
-    'server/sv_weedrun.lua',
-	'server/sv_versioncheck.lua'
+    'server/sv_weedrun.lua'
 }
 
 dependencies {
