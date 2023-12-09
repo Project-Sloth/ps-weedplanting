@@ -17,9 +17,9 @@ local RayCastCamera = function(dist)
     local dir = RotationToDirection(camRot)
     local dest = camPos + (dir * dist)
     local ray = StartShapeTestRay(camPos, dest, 17, -1, 0)
-    local _, hit, endPos, surfaceNormal, entityHit = GetShapeTestResult(ray)
+    local _, hit, endPos, surfaceNormal, materialHash, entityHit = GetShapeTestResultIncludingMaterial(ray)
     if hit == 0 then endPos = dest end
-    return hit, endPos, entityHit, surfaceNormal
+    return hit, endPos, entityHit, surfaceNormal, materialHash
 end
 
 --- Player load, unload and update handlers
@@ -51,21 +51,40 @@ RegisterNetEvent('ps-weedplanting:client:UseWeedSeed', function()
     local ModelHash = Shared.WeedProps[1]
     RequestModel(ModelHash)
     while not HasModelLoaded(ModelHash) do Wait(0) end
-    exports['qb-core']:DrawText(_U('place_or_cancel'), 'left')
-    local hit, dest, _, _ = RayCastCamera(Shared.rayCastingDistance)
+    local hit, dest, _, _, material = RayCastCamera(Shared.rayCastingDistance)
     local plant = CreateObject(ModelHash, dest.x, dest.y, dest.z + Shared.ObjectZOffset, false, false, false)
     SetEntityCollision(plant, false, false)
     SetEntityAlpha(plant, 150, true)
 
+--    exports['qb-core']:DrawText(_U('place_or_cancel'), 'left')
+
+    local canPlant = false
     local planted = false
     while not planted do
         Wait(0)
         hit, dest, _, _ = RayCastCamera(Shared.rayCastingDistance)
+
         if hit == 1 then
+            local materialFound = false
+
+            for _, value in ipairs(Shared.Soil) do
+                if material == value then
+                    materialFound = true 
+                end
+            end
+
+            if materialFound then
+                exports['qb-core']:DrawText(_U('place_or_cancel'), 'left')
+                canPlant = true
+            else
+                canPlant = false
+            end
+
             SetEntityCoords(plant, dest.x, dest.y, dest.z + Shared.ObjectZOffset)
 
             -- [E] To spawn plant
-            if IsControlJustPressed(0, 38) then
+            if IsControlJustPressed(0, 38) and canPlant then
+                canPlant = false
                 planted = true
                 exports['qb-core']:KeyPressed(38)
                 DeleteObject(plant)
