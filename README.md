@@ -23,7 +23,7 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 * Run the attached SQL script (weedplanting.sql)
 * Start resource through server.cfg
 * Restart your server.
-
+## older qb-core
 ## Add to your qb-core > shared > items.lua
 ```lua
 --- ps-weedplanting
@@ -38,6 +38,22 @@ For all support questions, ask in our [Discord](https://www.discord.gg/projectsl
 ['full_watering_can'] 			 = {['name'] = 'full_watering_can', 			['label'] = 'Full Watering Can', 		['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'watering_can.png', 	    ['unique'] = true, 	    ['useable'] = false, 	['shouldClose'] = false,	   ['combinable'] = nil,   ['description'] = 'Watering can filled with water for watering plants'},
 ["keya"]                         = {["name"] = "keya",                          ["label"] = "Labkey A",                 ["weight"] = 0,         ["type"] = "item",      ["image"] = "keya.png",                 ["unique"] = true,      ["useable"] = false,    ["shouldClose"] = false,   ["combinable"] = nil,   ["description"] = "Labkey A.."},
 ```
+## new qb-core update
+## Add to your qb-core > shared > items.lua
+```lua
+--- ps-weedplanting
+weedplant_seedm 			 = {name = 'weedplant_seedm', 			    label = 'Male Weed Seed', 			weight = 0, 		type = 'item', 		image = 'weedplant_seed.png', 		unique = false, 	useable = false, 	shouldClose = false,   combinable = nil,   description = 'Male Weed Seed'},
+weedplant_seedf 			 = {name = 'weedplant_seedf', 			    label = 'Female Weed Seed', 		weight = 0, 		type = 'item', 		image = 'weedplant_seed.png', 		unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Female Weed Seed'},
+weedplant_branch 			 = {name = 'weedplant_branch', 			    label = 'Weed Branch', 				weight = 10000, 	type = 'item', 		image = 'weedplant_branch.png', 	unique = true, 		useable = false, 	shouldClose = false,   combinable = nil,   description = 'Weed plant'},
+weedplant_weed 		     	 = {name = 'weedplant_weed', 			    label = 'Dried Weed', 				weight = 100, 		type = 'item', 		image = 'weedplant_weed.png', 		unique = false, 	useable = false, 	shouldClose = false,   combinable = nil,   description = 'Weed ready for packaging'},
+weedplant_packedweed 		 = {name = 'weedplant_packedweed', 			label = 'Packed Weed', 				weight = 100, 		type = 'item', 		image = 'weedplant_weed.png', 		unique = true, 		useable = false, 	shouldClose = false,   combinable = nil,   description = 'Weed ready for sale'},
+weedplant_package 			 = {name = 'weedplant_package', 			label = 'Suspicious Package', 		weight = 10000, 	type = 'item', 		image = 'weedplant_package.png', 	unique = true, 		useable = false, 	shouldClose = false,   combinable = nil,   description = 'Suspicious Package'},
+plant_tub 			         = {name = 'plant_tub', 			        label = 'Plant Tub', 		     	weight = 1000, 		type = 'item', 		image = 'plant_tub.png', 		    unique = false, 	useable = false, 	shouldClose = false,   combinable = nil,   description = 'Pot for planting plants'},
+empty_watering_can 			 = {name = 'empty_watering_can', 			label = 'Empty Watering Can', 		weight = 500, 		type = 'item', 		image = 'watering_can.png', 	    unique = true, 	    useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Empty watering can'},
+full_watering_can 			 = {name = 'full_watering_can', 			label = 'Full Watering Can', 		weight = 1000, 		type = 'item', 		image = 'watering_can.png', 	    unique = true, 	    useable = false, 	shouldClose = false,	   combinable = nil,   description = 'Watering can filled with water for watering plants'},
+keya                         = {name = "keya",                          label = "Labkey A",                 weight = 0,         type = "item",      image = "keya.png",                 unique = true,      useable = false,    shouldClose = false,   combinable = nil,   description = "Labkey A.."},
+```
+
 ## Weed Processing (Weed Lab)
 If you want to use the script's own teleport system to go inside the weed lab then leave the `EnableTp = true` on line 24.
 
