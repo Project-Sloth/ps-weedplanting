@@ -18,6 +18,7 @@ Shared.WeedItem = 'weedplant_weed'
 Shared.PackedWeedItem = 'weedplant_packedweed'
 Shared.SusPackageItem = 'weedplant_package'
 Shared.LabkeyItem = 'keya' -- Key required to enter the weed lab
+Shared.CopsRequired = 2 --how many police is required to start and continue weed runs.
 
 --- Weed Processing | Weed-Lab
 Shared.WeedLab = {

@@ -10,6 +10,7 @@ local hasDropOff = false
 local dropOffArea
 local deliveryPed
 local madeDeal = false
+CurrentCops = 0
 
 --- Functions
 
@@ -215,11 +216,14 @@ RegisterNetEvent('ps-weedplanting:client:PackageGoodsReceived', function()
 end)
 
 RegisterNetEvent('ps-weedplanting:client:ClockIn', function()
-    if delivering then return end
-    delivering = true
-    TriggerEvent('qb-phone:client:CustomNotification', _U('weedrun_delivery_title'), _U('weedrun_delivery_waitfornew'), 'fas fa-cannabis', '#00FF00', 8000)
-    Wait(math.random(Shared.DeliveryWaitTime[1], Shared.DeliveryWaitTime[2]))
-    createNewDropOff()
+    if CurrentCops >= Shared.CopsRequired then
+        if delivering then return end
+        delivering = true
+        TriggerEvent('qb-phone:client:CustomNotification', _U('weedrun_delivery_title'), _U('weedrun_delivery_waitfornew'), 'fas fa-cannabis', '#00FF00', 8000)
+        Wait(math.random(Shared.DeliveryWaitTime[1], Shared.DeliveryWaitTime[2]))
+        createNewDropOff()
+    else
+        QBCore.Functions.Notify(_U('not_enough_police'), 'error', 2500)
 end)
 
 RegisterNetEvent('ps-weedplanting:client:ClockOut', function()
