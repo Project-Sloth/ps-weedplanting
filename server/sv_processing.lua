@@ -1,36 +1,37 @@
---- Events
+--- Process Branch
 
-RegisterNetEvent('ps-weedplanting:server:ProcessBranch', function()
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    if not Player then return end
-    local item = Player.Functions.GetItemByName(Shared.BranchItem)
-    if item and item.info.health then
-        if Player.Functions.RemoveItem(Shared.BranchItem, 1, item.slot) then
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.BranchItem], 'remove', 1)
-            Player.Functions.AddItem(Shared.WeedItem, item.info.health, false)
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WeedItem], 'add', item.info.health)
-        end
-    elseif item then -- fallback if item.info.health is nil
-        if Player.Functions.RemoveItem(Shared.BranchItem, 1, item.slot) then
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.BranchItem], 'remove', 1)
-            Player.Functions.AddItem(Shared.WeedItem, Shared.ProcessingHealthFallback, false)
-            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WeedItem], 'add', Shared.ProcessingHealthFallback)
+server.registerUseableItem(Config.BranchItem, function(source, item)
+    if not server.hasItem(source, item.name) then return end
+
+    local removeItem = lib.callback.await('weedplanting:client:UseBranch', source)
+
+    if removeItem then
+        local item = server.getItem(source, Config.BranchItem)
+
+        if not item then return end
+    
+        local health = item?.metadata.health or item?.info.health or 100
+
+        if server.removeItem(source, item.name, 1, item.metadata or item.info, item.slot) then
+            server.addItem(source, Config.WeedItem, health)
         end
     end
 end)
 
-RegisterNetEvent('ps-weedplanting:server:PackageWeed', function()
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    if not Player then return end
-    local item = Player.Functions.GetItemByName(Shared.WeedItem)
-    if item and item.amount >= Shared.PackageAmount then
-        Player.Functions.RemoveItem(Shared.WeedItem, Shared.PackageAmount, item.slot)
-        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.WeedItem], 'remove', Shared.PackageAmount)
-        Player.Functions.AddItem(Shared.PackedWeedItem, 1, false)
-        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Shared.PackedWeedItem], 'add', 1)
+--- Package Bags
+
+server.registerUseableItem(Config.WeedItem, function(source, item)
+    local hasItem = server.hasItem(src, Config.WeedItem, 20)
+
+    if hasItem then
+        local removeItem = lib.callback.await('weedplanting:client:UseDryWeed', source)
+
+        if removeItem then
+            if server.removeItem(src, Config.WeedItem, 20) then
+                server.addItem(src, Config.PackedWeedItem, 1)
+            end
+        end
     else
-        TriggerClientEvent('QBCore:Notify', src,_U('not_enough_dryweed'), 'error')
+        utils.notify(src, Locales['notify_title_processing'], Locales['not_enough_dryweed'], 'error', 2500)
     end
 end)
