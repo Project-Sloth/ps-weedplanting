@@ -31,7 +31,6 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
     })
 
     local hit, entityHit, endCoords, surfaceNormal, materialHash = RayCast(511, 4, rayCastDistance)
-    if not hit then print('missed') lib.hideTextUI() placingSeed = false return end
 
     local ModelHash = Config.WeedProps[1]
     lib.requestModel(ModelHash)
@@ -39,9 +38,19 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
     SetModelAsNoLongerNeeded(ModelHash)
     SetEntityCollision(plant, false, false)
     SetEntityAlpha(plant, 200, true)
+    -- SetEntityDrawOutline(plant, true) -- Draw outline
 
     while not seedPlaced do
         hit, entityHit, endCoords, surfaceNormal, materialHash = RayCast(511, 4, rayCastDistance)
+
+        -- [X] to cancel
+        if IsControlPressed(0, 186) then
+            lib.hideTextUI()
+            seedPlaced = false
+            placingSeed = false
+            DeleteObject(plant)
+            return
+        end
 
         if hit then
             SetEntityCoords(plant, endCoords.x, endCoords.y, endCoords.z + Config.ObjectZOffset)
@@ -49,9 +58,7 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
             -- [E] To spawn plant
             if IsControlPressed(0, 38) then
                 -- print(materialHash)
-
                 if Config.GroundHashes[materialHash] then
-
                     seedPlaced = true
                     lib.hideTextUI()
                     DeleteObject(plant)
@@ -82,15 +89,6 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
 
                     Wait(200)
                 end
-            end
-            
-            -- [X] to cancel
-            if IsControlPressed(0, 186) then
-                lib.hideTextUI()
-                seedPlaced = false
-                placingSeed = false
-                DeleteObject(plant)
-                return
             end
         end
 
