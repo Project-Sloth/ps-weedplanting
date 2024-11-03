@@ -31,6 +31,7 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
     })
 
     local hit, entityHit, endCoords, surfaceNormal, materialHash = RayCast(511, 4, rayCastDistance)
+    if not hit then print('missed') lib.hideTextUI() placingSeed = false return end
 
     local ModelHash = Config.WeedProps[1]
     lib.requestModel(ModelHash)
