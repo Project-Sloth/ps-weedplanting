@@ -21,7 +21,7 @@ RegisterNetEvent('weedplanting:server:CollectPackageGoods', function()
     elseif packageCache[identifier] == 'done' then
         packageCache[identifier] = nil
         TriggerClientEvent('weedplanting:client:PackageGoodsReceived', src)
-        exports['ox_inventory']:AddItem(src, Config.SusPackageItem, 1)
+        exports[Config.Inventory]:AddItem(src, Config.SusPackageItem, 1)
     end
 end)
 
