@@ -13,13 +13,7 @@ RegisterNetEvent('weedplanting:server:CollectPackageGoods', function()
     if not packageCache[identifier] then return end
 
     if packageCache[identifier] == 'waiting' then
-        TriggerClientEvent('ox_lib:notify', src, {
-            title = Locales['notify_title_run'],
-            description = Locales['still_waiting'],
-            duration = 2500,
-            type = 'inform',
-            position = 'center-right',
-        })
+        utils.notify(src, Locales['notify_title_run'], Locales['still_waiting'], 'inform', 2500)
     elseif packageCache[identifier] == 'done' then
         packageCache[identifier] = nil
         TriggerClientEvent('weedplanting:client:PackageGoodsReceived', src)
@@ -39,13 +33,7 @@ RegisterNetEvent('weedplanting:server:DestroyWaitForPackage', function()
     
     packageCache[identifier] = nil
 
-    TriggerClientEvent('ox_lib:notify', src, {
-        title = Locales['notify_title_run'],
-        description = Locales['moved_too_far'],
-        duration = 2500,
-        type = 'inform',
-        position = 'center-right',
-    })
+    utils.notify(src, Locales['notify_title_run'], Locales['moved_too_far'], 'inform', 2500)
 end)
 
 RegisterNetEvent('weedplanting:server:WeedrunDelivery', function()
