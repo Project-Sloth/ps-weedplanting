@@ -7,7 +7,9 @@ RegisterNetEvent('weedplanting:server:CollectPackageGoods', function()
     local Player = server.GetPlayerFromId(src)
     if not Player then return end
 
-    local identifier = Player.PlayerData.identifier
+    local PlayerData = server.getPlayerData(Player)
+    local identifier = PlayerData.identifier
+
     if not packageCache[identifier] then return end
 
     if packageCache[identifier] == 'waiting' then
@@ -21,7 +23,7 @@ RegisterNetEvent('weedplanting:server:CollectPackageGoods', function()
     elseif packageCache[identifier] == 'done' then
         packageCache[identifier] = nil
         TriggerClientEvent('weedplanting:client:PackageGoodsReceived', src)
-        exports[Config.Inventory]:AddItem(src, Config.SusPackageItem, 1)
+        server.addItem(src, Config.SusPackageItem, 1)
     end
 end)
 
@@ -30,7 +32,9 @@ RegisterNetEvent('weedplanting:server:DestroyWaitForPackage', function()
     local Player = server.GetPlayerFromId(src)
     if not Player then return end
 
-    local identifier = Player.PlayerData.identifier
+    local PlayerData = server.getPlayerData(Player)
+    local identifier = PlayerData.identifier
+    
     if not packageCache[identifier] then return end
     
     packageCache[identifier] = nil
@@ -49,6 +53,8 @@ RegisterNetEvent('weedplanting:server:WeedrunDelivery', function()
     local Player = server.GetPlayerFromId(src)
     if not Player then return end
 
+    local PlayerData = server.getPlayerData(Player)
+
     if server.removeItem(src, Config.SusPackageItem, 1) then
         Wait(2000)
         local payout = math.random(Config.PayOut[1], Config.PayOut[2])
@@ -61,13 +67,14 @@ end)
 --- Callbacks
 
 lib.callback.register('weedplanting:server:PackageGoods', function(source)
-    local src = source
-    local Player = server.GetPlayerFromId(src)
-    local identifier = Player.PlayerData.identifier
+    local Player = server.GetPlayerFromId(source)
+
+    local PlayerData = server.getPlayerData(Player)
+    local identifier = PlayerData.identifier
 
     if packageCache[identifier] then return false end
     
-    if not server.removeItem(src, Config.PackedWeedItem, 1) then
+    if not server.removeItem(source, Config.PackedWeedItem, 1) then
         return false
     end
 
