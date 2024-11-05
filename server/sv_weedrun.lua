@@ -7,21 +7,17 @@ RegisterNetEvent('weedplanting:server:CollectPackageGoods', function()
     local Player = server.GetPlayerFromId(src)
     if not Player then return end
 
-    local identifier = Player.PlayerData.identifier
+    local PlayerData = server.getPlayerData(Player)
+    local identifier = PlayerData.identifier
+
     if not packageCache[identifier] then return end
 
     if packageCache[identifier] == 'waiting' then
-        TriggerClientEvent('ox_lib:notify', src, {
-            title = Locales['notify_title_run'],
-            description = Locales['still_waiting'],
-            duration = 2500,
-            type = 'inform',
-            position = 'center-right',
-        })
+        utils.notify(src, Locales['notify_title_run'], Locales['still_waiting'], 'inform', 2500)
     elseif packageCache[identifier] == 'done' then
         packageCache[identifier] = nil
         TriggerClientEvent('weedplanting:client:PackageGoodsReceived', src)
-        exports['ox_inventory']:AddItem(src, Config.SusPackageItem, 1)
+        server.addItem(src, Config.SusPackageItem, 1)
     end
 end)
 
@@ -30,24 +26,22 @@ RegisterNetEvent('weedplanting:server:DestroyWaitForPackage', function()
     local Player = server.GetPlayerFromId(src)
     if not Player then return end
 
-    local identifier = Player.PlayerData.identifier
+    local PlayerData = server.getPlayerData(Player)
+    local identifier = PlayerData.identifier
+    
     if not packageCache[identifier] then return end
     
     packageCache[identifier] = nil
 
-    TriggerClientEvent('ox_lib:notify', src, {
-        title = Locales['notify_title_run'],
-        description = Locales['moved_too_far'],
-        duration = 2500,
-        type = 'inform',
-        position = 'center-right',
-    })
+    utils.notify(src, Locales['notify_title_run'], Locales['moved_too_far'], 'inform', 2500)
 end)
 
 RegisterNetEvent('weedplanting:server:WeedrunDelivery', function()
     local src = source
     local Player = server.GetPlayerFromId(src)
     if not Player then return end
+
+    local PlayerData = server.getPlayerData(Player)
 
     if server.removeItem(src, Config.SusPackageItem, 1) then
         Wait(2000)
@@ -61,13 +55,14 @@ end)
 --- Callbacks
 
 lib.callback.register('weedplanting:server:PackageGoods', function(source)
-    local src = source
-    local Player = server.GetPlayerFromId(src)
-    local identifier = Player.PlayerData.identifier
+    local Player = server.GetPlayerFromId(source)
+
+    local PlayerData = server.getPlayerData(Player)
+    local identifier = PlayerData.identifier
 
     if packageCache[identifier] then return false end
     
-    if not server.removeItem(src, Config.PackedWeedItem, 1) then
+    if not server.removeItem(source, Config.PackedWeedItem, 1) then
         return false
     end
 

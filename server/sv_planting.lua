@@ -449,7 +449,7 @@ RegisterNetEvent('weedplanting:server:GiveWater', function(netId)
 
     if #(GetEntityCoords(GetPlayerPed(src)) - WeedPlants[id].coords) > 10 then return end
 
-    if exports['ox_inventory']:RemoveItem(src, Config.WaterItem, 1) then        
+    if server.removeItem(src, Config.WaterItem, 1) then        
         WeedPlants[id].water[#WeedPlants[id].water + 1] = os.time()
 
         MySQL.update([[
@@ -478,7 +478,7 @@ RegisterNetEvent('weedplanting:server:GiveFertilizer', function(netId)
     
     if #(GetEntityCoords(GetPlayerPed(src)) - WeedPlants[id].coords) > 10 then return end
 
-    if exports['ox_inventory']:RemoveItem(src, Config.FertilizerItem, 1) then
+    if server.removeItem(src, Config.FertilizerItem, 1) then
         WeedPlants[id].fertilizer[#WeedPlants[id].fertilizer + 1] = os.time()
         
         MySQL.update([[
@@ -507,7 +507,7 @@ RegisterNetEvent('weedplanting:server:AddMaleSeed', function(netId)
     
     if #(GetEntityCoords(GetPlayerPed(src)) - WeedPlants[id].coords) > 10 then return end
 
-    if exports['ox_inventory']:RemoveItem(src, Config.MaleSeed, 1) then
+    if server.removeItem(src, Config.MaleSeed, 1) then
         WeedPlants[id].gender = 'male'
 
         MySQL.update([[
