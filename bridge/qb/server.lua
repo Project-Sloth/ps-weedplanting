@@ -17,7 +17,7 @@ end
 server.getPlayerData = function(Player)
     return {
         source = Player.PlayerData.source,
-        identifier = Player.PlayerData.identifier,
+        identifier = Player.PlayerData.citizenid,
         name = Player.PlayerData.name,
     }
 end
