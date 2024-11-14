@@ -178,7 +178,13 @@ clearWeedRun = function()
     end
 end
 
---- Events
+--- Event Handlers
+
+AddEventHandler('onResourceStop', function(resource)
+    if resource ~= Config.Resource then return end
+
+    clearWeedRun()
+end)
 
 --- OxInventory: when inventory is updated, this eventhandler will check if the player still has suspicious packages
 
@@ -204,8 +210,16 @@ RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
 
     if client.hasItems(Config.SusPackageItem, 1) then
         checkPackage()
+    elseif hasPackage then
+        DetachEntity(package, true, true)
+        DeleteObject(package)
+        StopAnimTask(cache.ped, 'anim@heists@box_carry@', 'idle', 1.0)
+        package = nil
+        hasPackage = false
     end
 end)
+
+--- Events
 
 RegisterNetEvent('weedplanting:client:StartPackage', function(data)
     if waitingForPackage then return end
