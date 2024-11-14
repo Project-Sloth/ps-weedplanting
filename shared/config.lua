@@ -10,7 +10,7 @@ Config = {
     MaleSeed = 'weedplant_seedm',
     FemaleSeed = 'weedplant_seedf',
     FertilizerItem = 'weed_nutrition',
-    WaterItem = 'water',
+    WaterItem = 'water_bottle',
     BranchItem = 'weedplant_branch',
     WeedItem = 'weedplant_weed',
     PackedWeedItem = 'weedplant_packedweed',
@@ -40,13 +40,14 @@ Config = {
     },
 
     --- Growing Related Settings
+    SpawnRadius = 75.0, -- radius for which to spawn plants in
     rayCastingDistance = 10.0, -- distance in meters
     ClearOnStartup = true, -- Clear dead plants on script start-up
     ObjectZOffset = - 0.5, -- Z-coord offset for WeedProps
     FireTime = 10000, -- Time in milliseconds
 
-    GrowTime = 180, -- Time in minutes for a plant to grow from 0 to 100
-    LoopUpdate = 15, -- Time in minutes to perform a loop update for water, nutrition, health, growth, etc.
+    GrowTime = 5, -- Time in minutes for a plant to grow from 0 to 100
+    LoopUpdate = 1, -- Time in minutes to perform a loop update for water, nutrition, health, growth, etc.
     WaterDecay = 0.5, -- Percent of water that decays every minute
     FertilizerDecay = 0.5, -- Percent of fertilizers that decays every minute
 

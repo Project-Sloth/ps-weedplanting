@@ -4,17 +4,36 @@ local rayCastDistance = Config.rayCastingDistance
 local seedPlaced = false
 local placingSeed = false
 
---- Player load, unload and update handlers
+local WeedPlantCache = {}
 
-AddEventHandler('onResourceStop', function(resource)
-    if resource ~= Config.Resource then return end
+--- Global StateBag
 
-    clearWeedRun()
+local currentTime = GlobalState.WeedplantingTime
+
+AddStateBagChangeHandler('WeedplantingTime', '', function(bagName, _, value)
+    if bagName == 'global' and value then
+        currentTime = value
+    end
 end)
 
---- Events
+--- Functions
 
-RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
+--- Determines the growth stage of the plant.
+--- @param time number The time when the plant was created (Unix timestamp).
+--- @return stage (number) - Growth stage (1-5) 
+local calculateStage = function(time)
+    local current_time = currentTime
+    local growTime = Config.GrowTime * 60
+    local progress = current_time - time
+    local growthThreshold = 20
+
+    local growth = math.min(lib.math.round(progress * 100 / growTime, 2), 100.00)
+    
+    return math.min(5, math.floor((growth - 1) / growthThreshold) + 1)
+end
+
+--- Starts the raycasting process to plant a new weedplant object
+local useWeedSeed = function()
     if cache.vehicle then return end
 
     local hasItem = client.hasItems(Config.FemaleSeed, 1)
@@ -35,6 +54,7 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
     local ModelHash = Config.WeedProps[1]
     lib.requestModel(ModelHash)
     local plant = CreateObject(ModelHash, endCoords.x, endCoords.y, endCoords.z + Config.ObjectZOffset, false, false, false)
+    
     SetModelAsNoLongerNeeded(ModelHash)
     SetEntityCollision(plant, false, false)
     SetEntityAlpha(plant, 200, true)
@@ -58,7 +78,9 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
             -- [E] To spawn plant
             if IsControlPressed(0, 38) then
                 -- print(materialHash)
+
                 if Config.GroundHashes[materialHash] then
+
                     seedPlaced = true
                     lib.hideTextUI()
                     DeleteObject(plant)
@@ -78,11 +100,13 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
                         TriggerServerEvent('weedplanting:server:CreateNewPlant', endCoords)
                         placingSeed = false
                         ClearPedTasks(ped)
+                        return
                     else
                         placingSeed = false
                         ClearPedTasks(ped)
 
                         utils.notify(Locales['notify_title_planting'], Locales['canceled'], 'error', 3000)
+                        return
                     end
                 else
                     utils.notify(Locales['notify_title_planting'], Locales['cannot_plant_here'], 'error', 3000)
@@ -94,13 +118,176 @@ RegisterNetEvent('weedplanting:client:UseWeedSeed', function()
 
         Wait(0)
     end
+end
+
+--- Class
+
+--- @type table<any, WeedPlant>
+--- Global table holding all WeedPlant instances, keyed by their unique ID.
+local WeedPlants = {}
+
+--- @class WeedPlant
+--- @field id number The unique identifier of the weed plant.
+--- @field coords vector3 The coordinates of the weed plant in the game world.
+--- @field time number The planting time (Unix timestamp) representing when the plant was created.
+--- @field point ox_lib.CPoint A point object used for tracking player proximity to the plant.
+
+local WeedPlant = {}
+WeedPlant.__index = WeedPlant
+
+--- Creates a new WeedPlant instance and sets up proximity tracking with `ox_lib`.
+--- @param id number The unique identifier for the plant.
+--- @param coords vector3 The coordinates where the plant is located.
+--- @param time number The time when the plant was created (Unix timestamp).
+--- @return WeedPlant The created WeedPlant instance.
+function WeedPlant:create(id, coords, time)
+    local plant = setmetatable({}, WeedPlant)
+
+    plant.id = id
+    plant.coords = coords
+    plant.time = time
+
+    -- Create a proximity point to track the player entering/exiting the plant's vicinity.
+    plant.point = lib.points.new({
+        coords = coords,
+        distance = Config.SpawnRadius,
+        plantId = id,
+        time = time,
+
+        --- Callback for when a player enters the proximity of the plant.
+        --- Loads and displays the plant's 3D model based on its growth stage.
+        onEnter = function(self)
+            local stage = math.max(1, calculateStage(self.time))
+            local model = Config.WeedProps[stage]
+            if not model then return end
+            
+            lib.requestModel(model)
+            local entity = CreateObjectNoOffset(model, self.coords.x, self.coords.y, self.coords.z + Config.ObjectZOffset, false, false, false)
+            SetModelAsNoLongerNeeded(model)
+            
+            FreezeEntityPosition(entity, true)
+            SetEntityInvincible(entity, true)
+        
+            self.entity = entity
+            WeedPlantCache[entity] = self.plantId
+        end,
+
+        --- Callback for when a player exits the proximity of the plant.
+        --- Removes the 3D model entity from the game world.
+        onExit = function(self)
+            local entity = self.entity
+            if not entity then return end
+        
+            SetEntityAsMissionEntity(entity, false, true)
+            DeleteEntity(entity)
+        
+            self.entity = nil
+            WeedPlantCache[entity] = nil
+        end,
+        nearby = function(self)
+            Wait(1000) -- Check every second
+
+            local entity = self.entity
+            if not entity then return end
+
+            local stage = math.max(1, calculateStage(self.time))
+            local model = Config.WeedProps[stage]
+            if not model then return end
+
+            local currentModel = GetEntityModel(entity)
+            if currentModel ~= model then
+                -- Create New
+                lib.requestModel(model)
+                local newEntity = CreateObjectNoOffset(model, self.coords.x, self.coords.y, self.coords.z + Config.ObjectZOffset, false, false, false)
+                SetModelAsNoLongerNeeded(model)
+                
+                FreezeEntityPosition(newEntity, true)
+                SetEntityInvincible(entity, true)
+            
+                self.entity = newEntity
+                WeedPlantCache[newEntity] = self.plantId
+
+                -- Delete Current
+                SetEntityAsMissionEntity(entity, false, true)
+                DeleteEntity(entity)
+                WeedPlantCache[entity] = nil
+            end
+        end
+    })
+
+    WeedPlants[id] = plant
+
+    return plant
+end
+
+--- Removes the WeedPlant instance and the object from the game world.
+--- Deletes any associated 3D model entity and proximity tracking.
+function WeedPlant:remove()
+    local point = self.point
+    
+    local entity = point.entity
+    
+    if entity then
+        SetEntityAsMissionEntity(entity, false, true)
+        DeleteEntity(entity)
+        WeedPlantCache[entity] = nil
+    end
+
+    point:remove()
+    WeedPlants[self.id] = nil
+end
+
+--- Sets a property on the WeedPlant instance.
+--- @param property string The property name to set.
+--- @param value any The value to assign to the property.
+function WeedPlant:set(property, value)
+    self[property] = value
+end
+
+--- Retrieves a WeedPlant instance from the global WeedPlants table by its ID.
+--- @param id number The unique identifier of the plant to retrieve.
+--- @return WeedPlant|nil The WeedPlant instance if found, or nil if not.
+function WeedPlant:getPlant(id)
+    return WeedPlants[id]
+end
+
+--- Event Handlers
+
+AddEventHandler('onResourceStop', function(resource)
+    if resource ~= Config.Resource then return end
+
+    for entity, plantId in pairs(WeedPlantCache) do
+        if DoesEntityExist(entity) then
+            SetEntityAsMissionEntity(entity, false, true)
+            DeleteEntity(entity)
+        end
+    end
+end)
+
+--- Events
+
+RegisterNetEvent('weedplanting:client:UseWeedSeed', useWeedSeed)
+
+RegisterNetEvent('weedplanting:client:NewPlant', function(id, coords, time)
+    local plant = WeedPlant:create(id, coords, time)
+end)
+
+RegisterNetEvent('weedplanting:client:RemovePlant', function(plantId)
+    local plant = WeedPlant:getPlant(plantId)
+    if not plant then return end
+    
+    plant:remove()
 end)
 
 RegisterNetEvent('weedplanting:client:CheckPlant', function(data)
-    local netId = NetworkGetNetworkIdFromEntity(data.entity)
+    local plantId = WeedPlantCache[data.entity]
+    if not plantId then return end
 
-    local result = lib.callback.await('weedplanting:server:GetPlantData', 200, netId)
-    if not result then return end
+    local success, result = lib.callback.await('weedplanting:server:GetPlantData', 200, plantId)
+    if not success then
+        print(result)
+        return
+    end
 
     local isLEO = client.isPlayerPolice()
     local options = {}
@@ -237,14 +424,16 @@ RegisterNetEvent('weedplanting:client:CheckPlant', function(data)
 end)
 
 RegisterNetEvent('weedplanting:client:PoliceDestroy', function(entity)
-    local netId = NetworkGetNetworkIdFromEntity(entity)
+    local plantId = WeedPlantCache[entity]
+    if not plantId then return end
+
     local ped = cache.ped
 
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(500)
 
     ClearPedTasks(ped)
-    TriggerServerEvent('weedplanting:server:PoliceDestroy', netId)
+    TriggerServerEvent('weedplanting:server:ClearPlant', plantId, true)
 end)
 
 RegisterNetEvent('weedplanting:client:FireGoBrrrrrrr', function(coords)
@@ -256,13 +445,17 @@ RegisterNetEvent('weedplanting:client:FireGoBrrrrrrr', function(coords)
     UseParticleFxAsset('core')
     local effect = StartParticleFxLoopedAtCoord('ent_ray_paleto_gas_flames', coords.x, coords.y, coords.z + 0.5, 0.0, 0.0, 0.0, 0.6, false, false, false, false)
     Wait(Config.FireTime)
+
     StopParticleFxLooped(effect, 0)
     RemoveNamedPtfxAsset('core')
 end)
 
 RegisterNetEvent('weedplanting:client:ClearPlant', function(entity)
-    local netId = NetworkGetNetworkIdFromEntity(entity)
+    local plantId = WeedPlantCache[entity]
+    if not plantId then return end
+
     local ped = cache.ped
+
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(500)
 
@@ -276,17 +469,18 @@ RegisterNetEvent('weedplanting:client:ClearPlant', function(entity)
         canCancel = true,
         disable = { car = true, move = true, combat = true, mouse = false },
     }) then
-        TriggerServerEvent('weedplanting:server:ClearPlant', netId)
+        TriggerServerEvent('weedplanting:server:ClearPlant', plantId, false)
         ClearPedTasks(ped)
     else
         ClearPedTasks(ped)
-
         utils.notify(Locales['notify_title_planting'], Locales['canceled'], 'error', 3000)
     end
 end)
 
 RegisterNetEvent('weedplanting:client:HarvestPlant', function(entity)
-    local netId = NetworkGetNetworkIdFromEntity(entity)
+    local plantId = WeedPlantCache[entity]
+    if not plantId then return end
+
     local ped = cache.ped
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(500)
@@ -301,11 +495,10 @@ RegisterNetEvent('weedplanting:client:HarvestPlant', function(entity)
         canCancel = true,
         disable = { car = true, move = true, combat = true, mouse = false },
     }) then
-        TriggerServerEvent('weedplanting:server:HarvestPlant', netId)
+        TriggerServerEvent('weedplanting:server:HarvestPlant', plantId)
         ClearPedTasks(ped)
     else
         utils.notify(Locales['notify_title_planting'], Locales['canceled'], 'error', 3000)
-
         ClearPedTasks(ped)
     end
 end)
@@ -315,7 +508,9 @@ RegisterNetEvent('weedplanting:client:GiveWater', function(entity)
         return utils.notify(Locales['notify_title_planting'], Locales['missing_water'], 'error', 3000)
     end
 
-    local netId = NetworkGetNetworkIdFromEntity(entity)
+    local plantId = WeedPlantCache[entity]
+    if not plantId then return end
+
     local ped = cache.ped
     local coords = GetEntityCoords(ped)
     local model = joaat('prop_wateringcan')
@@ -343,7 +538,7 @@ RegisterNetEvent('weedplanting:client:GiveWater', function(entity)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
         RemoveNamedPtfxAsset('core')
-        TriggerServerEvent('weedplanting:server:GiveWater', netId)
+        TriggerServerEvent('weedplanting:server:GiveWater', plantId)
     else
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
@@ -358,7 +553,9 @@ RegisterNetEvent('weedplanting:client:GiveFertilizer', function(entity)
         return utils.notify(Locales['notify_title_planting'], Locales['missing_fertilizer'], 'error', 3000)
     end
 
-    local netId = NetworkGetNetworkIdFromEntity(entity)
+    local plantId = WeedPlantCache[entity]
+    if not plantId then return end
+
     local ped = cache.ped
     local coords = GetEntityCoords(ped)
     local model = joaat('w_am_jerrycan_sf')
@@ -379,7 +576,7 @@ RegisterNetEvent('weedplanting:client:GiveFertilizer', function(entity)
         disable = { car = true, move = true, combat = true, mouse = false },
         anim = { dict = 'weapon@w_sp_jerrycan', clip = 'fire', flags = 1 },
     }) then
-        TriggerServerEvent('weedplanting:server:GiveFertilizer', netId)
+        TriggerServerEvent('weedplanting:server:GiveFertilizer', plantId)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     else
@@ -395,7 +592,9 @@ RegisterNetEvent('weedplanting:client:AddMaleSeed', function(entity)
         return utils.notify(Locales['notify_title_planting'], Locales['missing_mseed'], 'error', 3000)
     end
 
-    local netId = NetworkGetNetworkIdFromEntity(entity)
+    local plantId = WeedPlantCache[entity]
+    if not plantId then return end
+
     local ped = cache.ped
 
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
@@ -412,7 +611,7 @@ RegisterNetEvent('weedplanting:client:AddMaleSeed', function(entity)
         disable = { car = true, move = true, combat = true, mouse = false },
     }) then
         ClearPedTasks(ped)
-        TriggerServerEvent('weedplanting:server:AddMaleSeed', netId)
+        TriggerServerEvent('weedplanting:server:AddMaleSeed', plantId)
     else
         ClearPedTasks(ped)
         utils.notify(Locales['notify_title_planting'], Locales['canceled'], 'error', 3000)
@@ -420,6 +619,20 @@ RegisterNetEvent('weedplanting:client:AddMaleSeed', function(entity)
 end)
 
 --- Threads
+
+CreateThread(function()
+    Wait(2000)
+
+    local result = lib.callback.await('weedplanting:server:GetPlantLocations', 200)
+
+    for id, data in pairs(result) do
+        if data then
+            local plant = WeedPlant:create(id, data.coords, data.time)
+        end
+    end
+end)
+
+--- Target
 
 if Config.Target == 'ox_target' then
     exports['ox_target']:addModel(Config.WeedProps, {
@@ -430,7 +643,7 @@ if Config.Target == 'ox_target' then
             label = Locales['check_plant'],
             distance = 1.5,
             canInteract = function(entity)
-                return Entity(entity)?.state.weedplanting
+                return WeedPlantCache[entity]
             end,
         }
     })
@@ -443,10 +656,12 @@ elseif Config.Target == 'qb-target' then
                 icon = 'fas fa-cannabis',
                 label = Locales['check_plant'],
                 canInteract = function(entity)
-                    return Entity(entity)?.state.weedplanting
+                    return WeedPlantCache[entity]
                 end,
             }
         },
         distance = 1.5, 
     })
 end
+
+exports('useWeedSeed', useWeedSeed)
