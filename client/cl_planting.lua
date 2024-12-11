@@ -187,6 +187,7 @@ function WeedPlant:create(id, coords, time)
         nearby = function(self)
             Wait(1000) -- Check every second
 
+            if self.removed then return end
             local entity = self.entity
             if not entity then return end
 
@@ -224,6 +225,7 @@ end
 --- Deletes any associated 3D model entity and proximity tracking.
 function WeedPlant:remove()
     local point = self.point
+    point.removed = true
     
     local entity = point.entity
     
