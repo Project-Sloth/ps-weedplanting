@@ -46,8 +46,8 @@ Config = {
     ObjectZOffset = - 0.5, -- Z-coord offset for WeedProps
     FireTime = 10000, -- Time in milliseconds
 
-    GrowTime = 5, -- Time in minutes for a plant to grow from 0 to 100
-    LoopUpdate = 1, -- Time in minutes to perform a loop update for water, nutrition, health, growth, etc.
+    GrowTime = 180, -- Time in minutes for a plant to grow from 0 to 100
+    LoopUpdate = 15, -- Time in minutes to perform a loop update for water, nutrition, health, growth, etc.
     WaterDecay = 0.5, -- Percent of water that decays every minute
     FertilizerDecay = 0.5, -- Percent of fertilizers that decays every minute
 
