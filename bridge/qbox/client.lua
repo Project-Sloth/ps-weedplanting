@@ -4,10 +4,10 @@ Config.Framework = 'qbox'
 
 client = {}
 
-local PlayerData = exports['qbx_core']:GetPlayerData()
+local PlayerData = QBX.PlayerData
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = exports['qbx_core']:GetPlayerData()
+    PlayerData = QBX.PlayerData
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
