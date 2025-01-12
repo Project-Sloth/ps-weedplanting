@@ -136,7 +136,7 @@ function WeedPlant:save()
         WHERE `id` = :id
     ]], {
         coords = json.encode(self.coords),
-        time = self.time,
+        time = os.date('%Y-%m-%d %H:%M:%S', self.time),
         fertilizer = json.encode(self.fertilizer),
         water = json.encode(self.water),
         gender = self.gender,
