@@ -361,7 +361,7 @@ RegisterNetEvent('weedplanting:server:HarvestPlant', function(plantId)
 
     plant:remove(false)
 
-    server.createLog(PlayerData.name, 'Harvest Plant', PlayerData.name .. ' (identifier: ' .. PlayerData.identifier .. ' | id: ' .. src .. ')' .. ' harvested plant: ' .. id .. ' Gender: ' .. gender .. ' Health: ' .. health)
+    server.createLog(PlayerData.name, 'Harvest Plant', PlayerData.name .. ' (identifier: ' .. PlayerData.identifier .. ' | id: ' .. src .. ')' .. ' harvested plant: ' .. plantId .. ' Gender: ' .. gender .. ' Health: ' .. health)
 end)
 
 RegisterNetEvent('weedplanting:server:GiveWater', function(plantId)
