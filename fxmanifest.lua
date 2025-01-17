@@ -3,7 +3,7 @@ game 'gta5'
 use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
-version '2.1.1'
+version '2.1.2'
 description 'Weedplanting Script for FiveM'
 author 'Lionh34rt'
 
